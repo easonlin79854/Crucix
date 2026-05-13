@@ -31,6 +31,10 @@ const geoKeywords = {
   'Syria':[35,38],'Iraq':[33,44],'Saudi':[24,45],'Yemen':[15,48],'Lebanon':[34,36],
   'India':[20,78],'Japan':[36,138],'Korea':[37,127],'Pyongyang':[39,125.7],
   'Taiwan':[23.5,121],'Philippines':[13,122],'Myanmar':[20,96],
+  '台灣':[23.5,121],'臺灣':[23.5,121],'中國':[35,105],'北京':[39.9,116.4],
+  '日本':[36,138],'韓國':[37,127],'南韓':[37,127],'北韓':[39.8,125.7],
+  '印度':[20,78],'菲律賓':[13,122],'越南':[16,108],'泰國':[15,100],
+  '印尼':[-2,118],'新加坡':[1.35,103.8],'馬來西亞':[4.2,101.9],
   'Canada':[56,-96],'Mexico':[23,-102],'Brazil':[-14,-51],'Argentina':[-38,-63],
   'Colombia':[4,-74],'Venezuela':[7,-66],'Cuba':[22,-80],'Chile':[-35,-71],
   'Germany':[51,10],'France':[46,2],'UK':[54,-2],'Britain':[54,-2],'London':[51.5,-0.1],
@@ -168,41 +172,33 @@ async function fetchRSS(url, source) {
 }
 
 const RSS_SOURCE_FALLBACKS = {
-  'SBS Australia': { lat: -35.2809, lon: 149.13, region: 'Australia' },
+  'CNA Taiwan': { lat: 25.033, lon: 121.565, region: 'Taiwan' },
+  'CNA Singapore': { lat: 1.352, lon: 103.820, region: 'Singapore' },
+  'Nikkei Asia': { lat: 35.681, lon: 139.767, region: 'Japan' },
   'Indian Express': { lat: 28.6139, lon: 77.209, region: 'India' },
   'The Hindu': { lat: 13.0827, lon: 80.2707, region: 'India' },
-  'MercoPress': { lat: -34.9011, lon: -56.1645, region: 'South America' }
+  'Bangkok Post': { lat: 13.756, lon: 100.501, region: 'Thailand' },
 };
-const REGIONAL_NEWS_SOURCES = ['MercoPress', 'Indian Express', 'The Hindu', 'SBS Australia'];
+const REGIONAL_NEWS_SOURCES = ['CNA Taiwan', 'CNA Singapore', 'Nikkei Asia', 'Indian Express', 'The Hindu', 'Bangkok Post'];
 
 export async function fetchAllNews() {
   const feeds = [
-    // Global
-    ['http://feeds.bbci.co.uk/news/world/rss.xml', 'BBC'],
-    ['https://rss.nytimes.com/services/xml/rss/nyt/World.xml', 'NYT'],
-    ['https://www.aljazeera.com/xml/rss/all.xml', 'Al Jazeera'],
-    // USA
-    ['https://feeds.npr.org/1001/rss.xml', 'NPR'],
-    ['https://feeds.bbci.co.uk/news/technology/rss.xml', 'BBC Tech'],
-    ['http://feeds.bbci.co.uk/news/science_and_environment/rss.xml', 'BBC Science'],
-    ['https://rss.nytimes.com/services/xml/rss/nyt/Americas.xml', 'NYT Americas'],
-    // Europe
-    ['https://rss.dw.com/rdf/rss-en-all', 'DW'],
-    ['https://www.france24.com/en/rss', 'France 24'],
-    ['https://www.euronews.com/rss?format=mrss', 'Euronews'],
-    // Africa & Cameroon region
-    ['https://rss.dw.com/rdf/rss-en-africa', 'DW Africa'],
-    ['https://www.rfi.fr/en/rss', 'RFI'],
-    ['https://www.africanews.com/feed/rss', 'Africa News'],
-    ['https://rss.nytimes.com/services/xml/rss/nyt/Africa.xml', 'NYT Africa'],
-    // Asia-Pacific
-    ['https://rss.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml', 'NYT Asia'],
-    ['https://www.sbs.com.au/news/topic/australia/feed', 'SBS Australia'],
+    // Taiwan / Greater China
+    ['https://feeds.feedburner.com/rsscna/intworld', 'CNA Taiwan'],
+    ['https://feeds.feedburner.com/rsscna/mainland', 'CNA Taiwan'],
+    ['https://feeds.feedburner.com/rsscna/finance', 'CNA Taiwan'],
+    // Pan-Asia / Singapore
+    ['https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6511', 'CNA Singapore'],
+    ['https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6936', 'CNA Singapore'],
+    ['https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6311', 'CNA Singapore'],
+    // Japan / Asia business
+    ['https://asia.nikkei.com/rss/feed/nar', 'Nikkei Asia'],
     // India
     ['https://indianexpress.com/section/india/feed/', 'Indian Express'],
     ['https://www.thehindu.com/news/national/feeder/default.rss', 'The Hindu'],
-    // South America
-    ['https://en.mercopress.com/rss/latin-america', 'MercoPress'],
+    // Southeast Asia
+    ['https://www.bangkokpost.com/rss/data/thailand.xml', 'Bangkok Post'],
+    ['https://www.bangkokpost.com/rss/data/world.xml', 'Bangkok Post'],
   ];
 
   const results = await Promise.allSettled(
@@ -415,7 +411,7 @@ export async function synthesize(data) {
     label: c.label || c.name, note: c.note || '', lat: c.lat || 0, lon: c.lon || 0
   }));
   const nuke = (data.sources.Safecast?.sites || []).map(s => ({
-    site: s.site, anom: s.anomaly || false, cpm: s.avgCPM, n: s.recentReadings || 0
+    site: s.site, anom: s.anomaly || false, cpm: s.avgCPM, n: s.recentReadings || 0, lat: s.lat, lon: s.lon
   }));
   const nukeSignals = (data.sources.Safecast?.signals || []).filter(s => s);
   const sdrData = data.sources.KiwiSDR || {};

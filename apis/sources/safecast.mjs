@@ -28,12 +28,12 @@ export async function getMeasurements(opts = {}) {
 
 // Key nuclear sites to monitor
 const NUCLEAR_SITES = {
-  zaporizhzhia: { lat: 47.51, lon: 34.58, label: 'Zaporizhzhia NPP (Ukraine)', radius: 100 },
-  chernobyl: { lat: 51.39, lon: 30.1, label: 'Chernobyl Exclusion Zone', radius: 50 },
-  bushehr: { lat: 28.83, lon: 50.89, label: 'Bushehr NPP (Iran)', radius: 100 },
-  yongbyon: { lat: 39.8, lon: 125.75, label: 'Yongbyon (North Korea)', radius: 100 },
-  fukushima: { lat: 37.42, lon: 141.03, label: 'Fukushima Daiichi', radius: 50 },
-  dimona: { lat: 31.0, lon: 35.15, label: 'Dimona (Israel)', radius: 100 },
+  maanshan: { lat: 21.96, lon: 120.75, label: 'Maanshan NPP (Taiwan)', radius: 60 },
+  fukushima: { lat: 37.42, lon: 141.03, label: 'Fukushima Daiichi (Japan)', radius: 50 },
+  kashiwazaki: { lat: 37.43, lon: 138.60, label: 'Kashiwazaki-Kariwa NPP (Japan)', radius: 60 },
+  kori: { lat: 35.32, lon: 129.30, label: 'Kori NPP (South Korea)', radius: 60 },
+  qinshan: { lat: 30.44, lon: 120.94, label: 'Qinshan NPP (China)', radius: 80 },
+  kudankulam: { lat: 8.17, lon: 77.71, label: 'Kudankulam NPP (India)', radius: 80 },
 };
 
 // Briefing — check radiation levels near key nuclear sites
@@ -54,6 +54,8 @@ export async function briefing() {
       return {
         site: site.label,
         key,
+        lat: site.lat,
+        lon: site.lon,
         recentReadings: values.length,
         avgCPM,
         maxCPM: values.length > 0 ? Math.max(...values) : null,
