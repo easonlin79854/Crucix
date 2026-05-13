@@ -122,7 +122,9 @@ Use these Cloudflare Pages settings:
 | Build command | `npm run build` |
 | Build output directory | `dist` |
 
-The build copies `dashboard/public/jarvis.html` to `dist/index.html`, which is the entry file Cloudflare serves at `/`. If you deploy without this build step, Pages may upload the repository files but not serve the dashboard entrypoint correctly. For live 15-minute refreshes, API endpoints, and SSE, deploy Crucix as a Node service with `npm run dev`/`npm start` instead of as a static Pages site.
+The build copies `dashboard/public/jarvis.html` to `dist/index.html`, which is the entry file Cloudflare serves at `/`. If you deploy without this build step, the repository root also includes a small `index.html` redirect fallback, but `npm run build` + `dist` is the recommended Pages setup. For live 15-minute refreshes, API endpoints, and SSE, deploy Crucix as a Node service with `npm run dev`/`npm start` instead of as a static Pages site.
+
+If Cloudflare fails with `npm error Missing script: "build"`, check the top of the build log. It must deploy a commit that includes this section of `package.json` and should no longer say `HEAD is now at 7a5015e`; that old commit predates the Pages build script. Merge or push the latest commit/PR to the branch selected in Cloudflare Pages, then retry the deployment.
 
 ---
 
