@@ -51,16 +51,16 @@ export async function getArrivals(airportIcao, begin, end) {
 
 // Key hotspot regions for monitoring
 const HOTSPOTS = {
-  middleEast: { lamin: 12, lomin: 30, lamax: 42, lomax: 65, label: 'Middle East' },
   taiwan: { lamin: 20, lomin: 115, lamax: 28, lomax: 125, label: 'Taiwan Strait' },
-  ukraine: { lamin: 44, lomin: 22, lamax: 53, lomax: 41, label: 'Ukraine Region' },
-  baltics: { lamin: 53, lomin: 19, lamax: 60, lomax: 29, label: 'Baltic Region' },
   southChinaSea: { lamin: 5, lomin: 105, lamax: 23, lomax: 122, label: 'South China Sea' },
   koreanPeninsula: { lamin: 33, lomin: 124, lamax: 43, lomax: 132, label: 'Korean Peninsula' },
-  caribbean: { lamin: 18, lomin: -90, lamax: 30, lomax: -72, label: 'Caribbean' },
-  gulfOfGuinea: { lamin: -2, lomin: -5, lamax: 8, lomax: 10, label: 'Gulf of Guinea' },
-  capeRoute: { lamin: -38, lomin: 12, lamax: -28, lomax: 24, label: 'Cape Route' },
-  hornOfAfrica: { lamin: 5, lomin: 40, lamax: 15, lomax: 55, label: 'Horn of Africa' },
+  eastChinaSea: { lamin: 24, lomin: 120, lamax: 34, lomax: 132, label: 'East China Sea' },
+  japan: { lamin: 30, lomin: 129, lamax: 46, lomax: 146, label: 'Japan Airspace' },
+  philippines: { lamin: 4, lomin: 116, lamax: 21, lomax: 127, label: 'Philippines' },
+  malacca: { lamin: -1, lomin: 95, lamax: 7, lomax: 104, label: 'Strait of Malacca' },
+  bayOfBengal: { lamin: 5, lomin: 80, lamax: 23, lomax: 98, label: 'Bay of Bengal' },
+  southAsia: { lamin: 6, lomin: 68, lamax: 32, lomax: 90, label: 'South Asia' },
+  middleEast: { lamin: 12, lomin: 30, lamax: 42, lomax: 65, label: 'Middle East' },
 };
 
 // Briefing — check hotspot regions for flight activity

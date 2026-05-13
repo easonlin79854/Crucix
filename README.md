@@ -105,6 +105,27 @@ docker compose up -d
 
 Dashboard at `http://localhost:3117`. Sweep data persists in `./runs/` via volume mount. Includes a health check endpoint.
 
+
+### Cloudflare Pages (static snapshot)
+
+Cloudflare Pages is a static asset host, so it cannot run the Express sweep server, `/api/data`, or SSE updates from `server.mjs`. For Pages, publish the bundled static dashboard snapshot:
+
+```bash
+npm install
+npm run build
+```
+
+Use these Cloudflare Pages settings:
+
+| Setting | Value |
+|---------|-------|
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+
+The build copies `dashboard/public/jarvis.html` to `dist/index.html`, which is the entry file Cloudflare serves at `/`, and seeds the static snapshot with Traditional Chinese labels, Asian nuclear sites, and Asia-first news-source placeholders. Set `CRUCIX_STATIC_FETCH_NEWS=1` during build if you want the static bundle to attempt a one-time RSS fetch. If you deploy without this build step, the repository root also includes a small `index.html` redirect fallback, but `npm run build` + `dist` is the recommended Pages setup. For live 15-minute refreshes, API endpoints, and SSE, deploy Crucix as a Node service with `npm run dev`/`npm start` instead of as a static Pages site.
+
+If Cloudflare fails with `npm error Missing script: "build"`, check the top of the build log. It must deploy a commit that includes this section of `package.json` and should no longer say `HEAD is now at 7a5015e`; that old commit predates the Pages build script. Merge or push the latest commit/PR to the branch selected in Cloudflare Pages, then retry the deployment.
+
 ---
 
 ## What You Get
@@ -114,14 +135,14 @@ A self-contained Jarvis-style HUD with:
 - **3D WebGL globe** (Globe.gl) with atmosphere glow, star field, and smooth rotation — plus a classic flat map toggle
 - **9 marker types** across both views: fire detections, air traffic, radiation sites, maritime chokepoints, SDR receivers, OSINT events, health alerts, geolocated news, conflict events
 - **Animated 3D flight corridor arcs** between air traffic hotspots and global hubs
-- **Region filters** (World, Americas, Europe, Middle East, Asia Pacific, Africa) — rotates the globe or zooms the flat map
+- **Region filters** default to Asia Pacific first, then Middle East, Europe, Americas, Africa, and World — rotates the globe or zooms the flat map
 - **Live market data** — indexes, crypto, energy, commodities via Yahoo Finance (no API key needed)
 - **Risk gauges** — VIX, high-yield spread, supply chain pressure index
 - **OSINT feed** — English-language posts from 17 Telegram intelligence channels (expandable)
-- **News ticker** — merged RSS + GDELT headlines + Telegram posts, auto-scrolling
+- **News ticker** — Asia-first RSS from CNA Taiwan, CNA Singapore, Nikkei Asia, Indian Express, The Hindu, and Bangkok Post, merged with GDELT and Telegram posts
 - **Sweep delta** — live panel showing what changed since last sweep (new signals, escalations, de-escalations with severity)
 - **Cross-source signals** — correlated intelligence across satellite, economic, conflict, and social domains
-- **Nuclear watch** — real-time radiation readings from Safecast + EPA RadNet
+- **Nuclear watch** — Asian nuclear plant radiation readings from Safecast + EPA RadNet context
 - **Space watch** — CelesTrak satellite tracking: recent launches, ISS, military constellations, Starlink/OneWeb counts
 - **Leverageable ideas** — AI-generated trade ideas (with LLM) or signal-correlated ideas (without)
 
@@ -345,10 +366,10 @@ crucix/
 | Source | What It Tracks | Auth |
 |--------|---------------|------|
 | **GDELT** | Global news events, conflict mapping (100+ languages) | None |
-| **OpenSky** | Real-time ADS-B flight tracking across 6 hotspot regions | None |
+| **OpenSky** | Real-time ADS-B flight tracking across Asia-first hotspot regions | None |
 | **NASA FIRMS** | Satellite fire/thermal anomaly detection (3hr latency) | Free key |
 | **Maritime/AIS** | Vessel tracking, dark ships, sanctions evasion | Free key |
-| **Safecast** | Citizen-science radiation monitoring near 6 nuclear sites | None |
+| **Safecast** | Citizen-science radiation monitoring near Asian nuclear sites | None |
 | **ACLED** | Armed conflict events: battles, explosions, protests | Free (OAuth2) |
 | **ReliefWeb** | UN humanitarian crisis tracking | None |
 | **WHO** | Disease outbreaks and health emergencies | None |
@@ -403,6 +424,7 @@ crucix/
 | `npm run inject` | `node dashboard/inject.mjs` | Inject latest data into static HTML |
 | `npm run brief:save` | `node apis/save-briefing.mjs` | Run sweep + save timestamped JSON |
 | `npm run diag` | `node diag.mjs` | Run diagnostics (Node version, imports, port check) |
+| `npm run build` | `node scripts/build-cloudflare-pages.mjs` | Build the static Cloudflare Pages bundle in `dist/` |
 
 ---
 
@@ -412,6 +434,7 @@ All settings are in `.env` with sensible defaults:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `CRUCIX_LANG` | `zh` | Dashboard/server language (`zh`, `en`, or `fr`) |
 | `PORT` | `3117` | Dashboard server port |
 | `REFRESH_INTERVAL_MINUTES` | `15` | Auto-refresh interval |
 | `LLM_PROVIDER` | disabled | `anthropic`, `openai`, `gemini`, `codex`, `openrouter`, `minimax`, `mistral`, or `grok` |
