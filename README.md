@@ -105,6 +105,27 @@ docker compose up -d
 
 Dashboard at `http://localhost:3117`. Sweep data persists in `./runs/` via volume mount. Includes a health check endpoint.
 
+
+### Cloudflare Pages (static snapshot)
+
+Cloudflare Pages is a static asset host, so it cannot run the Express sweep server, `/api/data`, or SSE updates from `server.mjs`. For Pages, publish the bundled static dashboard snapshot:
+
+```bash
+npm install
+npm run build
+```
+
+Use these Cloudflare Pages settings:
+
+| Setting | Value |
+|---------|-------|
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+
+The build copies `dashboard/public/jarvis.html` to `dist/index.html`, which is the entry file Cloudflare serves at `/`. If you deploy without this build step, the repository root also includes a small `index.html` redirect fallback, but `npm run build` + `dist` is the recommended Pages setup. For live 15-minute refreshes, API endpoints, and SSE, deploy Crucix as a Node service with `npm run dev`/`npm start` instead of as a static Pages site.
+
+If Cloudflare fails with `npm error Missing script: "build"`, check the top of the build log. It must deploy a commit that includes this section of `package.json` and should no longer say `HEAD is now at 7a5015e`; that old commit predates the Pages build script. Merge or push the latest commit/PR to the branch selected in Cloudflare Pages, then retry the deployment.
+
 ---
 
 ## What You Get
@@ -403,6 +424,7 @@ crucix/
 | `npm run inject` | `node dashboard/inject.mjs` | Inject latest data into static HTML |
 | `npm run brief:save` | `node apis/save-briefing.mjs` | Run sweep + save timestamped JSON |
 | `npm run diag` | `node diag.mjs` | Run diagnostics (Node version, imports, port check) |
+| `npm run build` | `node scripts/build-cloudflare-pages.mjs` | Build the static Cloudflare Pages bundle in `dist/` |
 
 ---
 
