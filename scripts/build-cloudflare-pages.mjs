@@ -71,7 +71,6 @@ async function prepareDashboardHtml() {
     newsFeed: newsToFeed(news),
   }));
 }
-
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST, { recursive: true });
 
