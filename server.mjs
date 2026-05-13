@@ -246,7 +246,7 @@ app.get('/', (req, res) => {
     
     // Inject locale data into the HTML
     const locale = getLocale();
-    const localeScript = `<script>window.__CRUCIX_LOCALE__ = ${JSON.stringify(locale).replace(/<\/script>/gi, '<\\/script>')};</script>`;
+    const localeScript = `<script>window.__CRUCIX_SERVER_MODE__ = true; window.__CRUCIX_LOCALE__ = ${JSON.stringify(locale).replace(/<\/script>/gi, '<\\/script>')};</script>`;
     html = html.replace('</head>', `${localeScript}\n</head>`);
     
     res.type('html').send(html);

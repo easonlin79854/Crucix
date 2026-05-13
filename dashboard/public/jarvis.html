@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRUCIX — Intelligence Terminal</title>
+<title>CRUCIX — 情資終端</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -235,6 +235,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 .tk-src.af{color:#a5d6a7;border-color:rgba(165,214,167,0.3)}
 .tk-src.sa{color:#ffab91;border-color:rgba(255,171,145,0.3)}
 .tk-src.ind{color:#ffcc80;border-color:rgba(255,204,128,0.3)}
+.tk-src.tw{color:#64f0c8;border-color:rgba(100,240,200,0.35)}
+.tk-src.sg{color:#80deea;border-color:rgba(128,222,234,0.35)}
+.tk-src.jp{color:#f48fb1;border-color:rgba(244,143,177,0.35)}
+.tk-src.sea{color:#ffe082;border-color:rgba(255,224,130,0.35)}
 .tk-src.anz{color:#80cbc4;border-color:rgba(128,203,196,0.3)}
 .tk-src.us{color:#90caf9;border-color:rgba(144,202,249,0.3)}
 .tk-src.other{color:#b0bec5;border-color:rgba(176,190,197,0.2)}
@@ -340,15 +344,15 @@ body.low-perf .ticker-wrap::-webkit-scrollbar-thumb{background:rgba(100,240,200,
       <div class="map-container" id="mapContainer">
         <div id="globeViz"></div>
         <svg id="flatMapSvg" style="display:none;width:100%;height:100%;position:absolute;top:0;left:0;cursor:grab"></svg>
-        <div class="map-loading" id="mapLoading"><div class="map-loading-card"><div class="map-loading-ring"></div><div class="map-loading-text" id="mapLoadingText">Initializing 3D Globe</div></div></div>
+        <div class="map-loading" id="mapLoading"><div class="map-loading-card"><div class="map-loading-ring"></div><div class="map-loading-text" id="mapLoadingText">初始化 3D 地球</div></div></div>
         <div class="map-legend" id="mapLegend"></div>
-        <div class="map-hint" id="mapHint">SCROLL TO ZOOM · DRAG TO PAN</div>
+        <div class="map-hint" id="mapHint">滾動縮放 · 拖曳平移</div>
         <div class="map-controls">
           <button class="map-ctrl-btn" onclick="mapZoom(1.5)" title="Zoom in">+</button>
           <button class="map-ctrl-btn" onclick="mapZoom(0.67)" title="Zoom out">&minus;</button>
           <button class="map-ctrl-btn map-toggle" id="flightToggle" onclick="toggleFlights()" title="Toggle flight routes">&#9992;</button>
         </div>
-        <button class="proj-toggle" id="projToggle" onclick="toggleMapMode()">GLOBE MODE</button>
+        <button class="proj-toggle" id="projToggle" onclick="toggleMapMode()">地球模式</button>
         <div class="map-popup" id="mapPopup"><button class="pp-close" onclick="closePopup()">&times;</button><div class="pp-head"></div><div class="pp-text"></div><div class="pp-meta"></div></div>
       </div>
       <div class="lower" id="lowerGrid"></div>
@@ -360,21 +364,22 @@ body.low-perf .ticker-wrap::-webkit-scrollbar-thumb{background:rgba(100,240,200,
   <div class="glossary-panel">
     <div class="glossary-head">
       <div>
-        <div class="glossary-kicker">Signal Guide</div>
-        <div class="glossary-title">What the signals actually mean</div>
-        <div class="glossary-sub">Plain-English interpretation, why it matters, and what you should not infer from it.</div>
+        <div class="glossary-kicker">訊號說明</div>
+        <div class="glossary-title">亞洲情資訊號代表什麼</div>
+        <div class="glossary-sub">繁體中文說明各訊號的用途、限制與判讀方式。</div>
       </div>
-      <button class="glossary-close" onclick="closeGlossary()" aria-label="Close signal guide">&times;</button>
+      <button class="glossary-close" onclick="closeGlossary()" aria-label="關閉訊號說明">&times;</button>
     </div>
     <div class="glossary-body" id="glossaryBody"></div>
-    <div class="glossary-foot">Treat these as interpretation guides, not conclusions. Stronger judgments should come from corroboration across multiple layers, not from a single signal viewed in isolation.</div>
+    <div class="glossary-foot">這些是判讀提示而非結論；重要判斷應來自空域、熱點、新聞、核電與市場等多層交叉驗證。</div>
   </div>
 </div>
 <script>
 // === DATA ===
-let D = {"meta":{"version":"2.0.0","timestamp":"2026-04-03T16:18:10.188Z","totalDurationMs":30079,"sourcesQueried":29,"sourcesOk":28,"sourcesFailed":1},"air":[{"region":"Middle East","total":134,"noCallsign":5,"highAlt":4,"top":[["Turkey",30],["United Arab Emirates",24],["Qatar",6],["United Kingdom",6],["Russian Federation",5]]},{"region":"Taiwan Strait","total":56,"noCallsign":5,"highAlt":4,"top":[["China",19],["Taiwan",14],["Republic of Korea",10],["Japan",5],["Luxembourg",2]]},{"region":"Ukraine Region","total":46,"noCallsign":1,"highAlt":5,"top":[["Turkey",8],["Romania",6],["Hungary",4],["Poland",4],["Germany",3]]},{"region":"Baltic Region","total":31,"noCallsign":0,"highAlt":0,"top":[["Russian Federation",7],["Poland",5],["Latvia",5],["Finland",3],["Sweden",2]]},{"region":"South China Sea","total":115,"noCallsign":5,"highAlt":3,"top":[["China",56],["Republic of Korea",12],["Philippines",12],["Malaysia",9],["Japan",6]]},{"region":"Korean Peninsula","total":8,"noCallsign":0,"highAlt":3,"top":[["United States",4],["China",1],["Taiwan",1],["Japan",1],["Republic of Korea",1]]},{"region":"Caribbean","total":891,"noCallsign":19,"highAlt":38,"top":[["United States",825],["Canada",32],["Mexico",16],["Panama",5],["Colombia",3]]},{"region":"Gulf of Guinea","total":0,"noCallsign":0,"highAlt":0,"top":[]},{"region":"Cape Route","total":11,"noCallsign":1,"highAlt":0,"top":[["South Africa",9],["Germany",2]]},{"region":"Horn of Africa","total":0,"noCallsign":0,"highAlt":0,"top":[]}],"thermal":[{"region":"Middle East","det":1271,"night":689,"hc":51,"fires":[{"lat":23.28064,"lon":54.26164,"frp":180.3},{"lat":23.84427,"lon":53.65954,"frp":88.63},{"lat":23.27888,"lon":54.26292,"frp":65.43},{"lat":23.83226,"lon":53.62622,"frp":64.25},{"lat":23.2719,"lon":54.26493,"frp":57.8},{"lat":23.2758,"lon":54.26994,"frp":56.46},{"lat":30.92245,"lon":48.85786,"frp":53.54},{"lat":13.19805,"lon":32.94167,"frp":49.55}]},{"region":"Ukraine","det":245,"night":59,"hc":7,"fires":[{"lat":51.08384,"lon":34.85754,"frp":98.78},{"lat":50.17256,"lon":36.91306,"frp":57.85},{"lat":51.08468,"lon":34.86295,"frp":38.7},{"lat":48.91101,"lon":30.10451,"frp":31.15},{"lat":52.6921,"lon":30.74334,"frp":29.37},{"lat":52.07915,"lon":25.69872,"frp":27.33},{"lat":51.08794,"lon":34.86167,"frp":23.45},{"lat":52.31651,"lon":32.55792,"frp":20.73}]},{"region":"Iran","det":740,"night":452,"hc":17,"fires":[{"lat":30.92245,"lon":48.85786,"frp":53.54},{"lat":30.75065,"lon":48.28501,"frp":40.64},{"lat":30.75481,"lon":48.28442,"frp":40.64},{"lat":30.71966,"lon":49.82515,"frp":37.38},{"lat":30.74971,"lon":48.27633,"frp":35.02},{"lat":30.75386,"lon":48.27575,"frp":35.02},{"lat":31.2724,"lon":48.12039,"frp":33.11},{"lat":27.50295,"lon":52.63748,"frp":32.89}]},{"region":"Sudan / Horn of Africa","det":2147,"night":96,"hc":92,"fires":[{"lat":9.36072,"lon":36.87687,"frp":112.91},{"lat":2.30776,"lon":22.57457,"frp":96.78},{"lat":7.13573,"lon":28.22997,"frp":84.94},{"lat":7.12821,"lon":28.23156,"frp":80.97},{"lat":2.97582,"lon":21.70991,"frp":67.59},{"lat":3.96735,"lon":22.66164,"frp":64.27},{"lat":11.37062,"lon":35.81662,"frp":63.07},{"lat":3.6656,"lon":32.33914,"frp":61.45}]},{"region":"Myanmar","det":27005,"night":5285,"hc":384,"fires":[{"lat":17.69662,"lon":97.04257,"frp":541.71},{"lat":18.07759,"lon":97.47091,"frp":493.31},{"lat":18.03867,"lon":97.66878,"frp":467.74},{"lat":21.99852,"lon":92.34525,"frp":435.64},{"lat":18.44615,"lon":96.3231,"frp":404.83},{"lat":18.44998,"lon":96.32241,"frp":404.83},{"lat":18.4765,"lon":96.27098,"frp":373.22},{"lat":18.15929,"lon":97.44369,"frp":371.63}]},{"region":"South Asia","det":19132,"night":3268,"hc":331,"fires":[{"lat":17.69662,"lon":97.04257,"frp":541.71},{"lat":18.07759,"lon":97.47091,"frp":493.31},{"lat":18.03867,"lon":97.66878,"frp":467.74},{"lat":21.99852,"lon":92.34525,"frp":435.64},{"lat":18.44615,"lon":96.3231,"frp":404.83},{"lat":18.44998,"lon":96.32241,"frp":404.83},{"lat":18.4765,"lon":96.27098,"frp":373.22},{"lat":18.15929,"lon":97.44369,"frp":371.63}]}],"tSignals":["HIGH INTENSITY FIRES in Middle East: 15 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in Middle East: 689 night detections (potential strikes/combat)","HIGH INTENSITY FIRES in Ukraine: 15 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in Ukraine: 59 night detections (potential strikes/combat)","HIGH INTENSITY FIRES in Iran: 15 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in Iran: 452 night detections (potential strikes/combat)","HIGH INTENSITY FIRES in Sudan / Horn of Africa: 15 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in Sudan / Horn of Africa: 96 night detections (potential strikes/combat)","HIGH INTENSITY FIRES in Myanmar: 15 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in Myanmar: 5285 night detections (potential strikes/combat)","HIGH INTENSITY FIRES in South Asia: 15 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in South Asia: 3268 night detections (potential strikes/combat)"],"chokepoints":[{"label":"Strait of Hormuz","note":"20% of world oil","lat":26.5,"lon":56.5},{"label":"Suez Canal","note":"12% of world trade","lat":30.5,"lon":32.3},{"label":"Strait of Gibraltar","note":"Gateway to Mediterranean, ~10-20% global trade influence","lat":36,"lon":-5.7},{"label":"Strait of Malacca","note":"25% of world trade","lat":2.5,"lon":101.5},{"label":"Bab el-Mandeb","note":"Red Sea gateway","lat":12.6,"lon":43.3},{"label":"Taiwan Strait","note":"88% of largest container ships","lat":24,"lon":119},{"label":"Bosphorus","note":"Black Sea access","lat":41.1,"lon":29.1},{"label":"Panama Canal","note":"5% of world trade","lat":9.1,"lon":-79.7},{"label":"Cape of Good Hope","note":"Suez alternative","lat":-34.4,"lon":18.5}],"nuke":[{"site":"Zaporizhzhia NPP (Ukraine)","anom":false,"cpm":33.92,"n":25},{"site":"Chernobyl Exclusion Zone","anom":false,"cpm":33.28,"n":25},{"site":"Bushehr NPP (Iran)","anom":false,"cpm":null,"n":0},{"site":"Yongbyon (North Korea)","anom":false,"cpm":null,"n":0},{"site":"Fukushima Daiichi","anom":false,"cpm":69.54,"n":25},{"site":"Dimona (Israel)","anom":false,"cpm":29.52,"n":25}],"nukeSignals":["All monitored nuclear sites within normal radiation levels"],"airMeta":{"fallback":false,"liveTotal":1292,"timestamp":"2026-04-03T16:17:41.390Z","source":"OpenSky"},"sdr":{"total":892,"online":892,"zones":[{"region":"Middle East","count":3,"receivers":[{"name":"0-30 MHz SDR | Cyprus","lat":34.76,"lon":32.53},{"name":"0-30 MHz SDR | Doha, Qatar","lat":25.2854,"lon":51.531},{"name":"0-30 MHz SDR | Baghdad, IRAQ","lat":33.3355,"lon":44.387736}]},{"region":"Ukraine / Eastern Europe","count":5,"receivers":[{"name":"The Real VLF-HF SDR Receiver 8KHz-30MHz | 16m LongWire@8m Height | Ground | BleedResistor | Attentua","lat":44.53,"lon":26.23},{"name":"0-30 MHz -YO8SGV- KN37EX- KiwiSDR | Dorohoi, Romania","lat":47.96881,"lon":26.379005},{"name":"The Real VLF-HF SDR Receiver 8KHz-30MHz | 16m LongWire@8m Height | Ground | BleedResistor | Attentua","lat":44.53,"lon":26.23},{"name":"0-30 MHz SDR | SLANIC PH","lat":45.24,"lon":25.94},{"name":"The Real VLF-HF SDR Receiver 8KHz-30MHz | 16m LongWire@8m Height | Ground | BleedResistor | Attentua","lat":44.53,"lon":26.23}]},{"region":"Taiwan Strait","count":12,"receivers":[{"name":"0-30 MHz SDR ,BV3UN 桃園龜山 | Taoyuan, Taiwan","lat":25.005928,"lon":121.343095},{"name":"0-30 MHz SDR ,BV3UN 桃園龜山 | Taoyuan, Taiwan","lat":25.005928,"lon":121.343095},{"name":"0-30 MHz SDR, BM2KVV Taiwan #1","lat":25.106238,"lon":121.816775},{"name":"0-30 MHz SDR, BM2KVV Taiwan #2","lat":25.11,"lon":121},{"name":"0-30 MHz SDR, BM2KVV Taiwan #3","lat":25.106,"lon":121.82}]},{"region":"Baltic Region","count":0,"receivers":[]},{"region":"South China Sea","count":6,"receivers":[{"name":"0-30 MHz SDR, VR2BG | Hong Kong","lat":22.35,"lon":114.13},{"name":"0-30 MHz SDR,BV7AU  Pingtung taiwan","lat":22.79,"lon":120.58},{"name":"0-30 MHz SDR,Pingtung taiwan -3","lat":22.7943,"lon":120.5373},{"name":"0-30 MHz SDR,Pingtung taiwan-2(BV7AU) 屏東 臺灣","lat":22.791,"lon":120.581},{"name":"[Feline] 0-30MHz SDR | Waterfall Bay, Hong Kong","lat":22.25,"lon":114.135}]},{"region":"Korean Peninsula","count":8,"receivers":[{"name":"0-30 MHz KIWI SDR( 4ch ), HL5NTR, Daegu_City Republic of Korea. Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 8ch ), HL5NTR, Daegu_City Republic of Korea. 85M Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 8ch ), HL5NTR, Daegu_City Republic of Korea. 85M Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 8ch ), HL5NTR, Daegu_City Republic of Korea. 85M Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 4ch ), HL5NTR, Daegu_City Republic of Korea. Loop-type Antenna.","lat":35.888778,"lon":128.574964}]},{"region":"Iran","count":2,"receivers":[{"name":"0-30 MHz SDR | Doha, Qatar","lat":25.2854,"lon":51.531},{"name":"0-30 MHz SDR | Baghdad, IRAQ","lat":33.3355,"lon":44.387736}]},{"region":"Sahel / West Africa","count":0,"receivers":[]}]},"tg":{"posts":176,"urgent":[{"channel":"intelslava","text":"🇮🇷🇮🇱The strike of Iranian ballistic missiles on Petah Tikva precisely hit a drone production plant belonging to the Israeli company AeroSol.","views":33300,"date":"2026-04-03T10:13:58+00:00","urgentFlags":["missile","strike","drone"]},{"channel":"intelslava","text":"🇺🇸🇮🇷Trump announced new strikes on Iran. He confirmed that they attacked several bridges, and the next targets will be the energy sector.\n\nAll of this is in the event that Iran does not agree to a","views":33900,"date":"2026-04-03T10:14:47+00:00","urgentFlags":["confirmed","strike"]},{"channel":"intelslava","text":"🇺🇸🇮🇷The Iranians found the ejection seat of one of the ejected pilots of the American F-15E, but not the pilot himself.\n\nEither he has already been picked up by rescuers, or he is still hiding som","views":28100,"date":"2026-04-03T12:20:12+00:00","urgentFlags":["strike","advance"]},{"channel":"intelslava","text":"🇲🇬⚡️The authorities of Madagascar have prevented an attempt at a coup d'état and an assassination attempt on the president. Charges have been brought against 13 people, according to prosecutor Narin","views":28300,"date":"2026-04-03T12:05:57+00:00","urgentFlags":["coup","assassination"]},{"channel":"intelslava","text":"🇺🇸🇮🇷F-35 fighter jets and MQ-9 Reaper drones joined the operation to rescue the F-15E pilots who were shot down over Iran.","views":28000,"date":"2026-04-03T12:21:01+00:00","urgentFlags":["drone"]},{"channel":"intelslava","text":"🇮🇷🇦🇪Abu Dhabi suspended the operation of its largest gas processing complex \"after the fall of debris from an Iranian missile\" - Bloomberg.","views":27400,"date":"2026-04-03T12:03:54+00:00","urgentFlags":["missile"]},{"channel":"intelslava","text":"🇮🇷🇺🇸One \"Buk\" missile or its analogue could easily take out all three of them at once, not to mention more powerful air defense systems.\n\nHowever, it seems that the Americans are taking advantage ","views":24400,"date":"2026-04-03T13:33:34+00:00","urgentFlags":["missile"]},{"channel":"wartranslated","text":"Ukraine says air defenses have neutralized 26 missiles and 515 drones after a massive attack. In total, 579 aerial threats were recorded, including 10 Iskander-M ballistic missiles, 25 Kh-101 cruise m","views":890,"date":"2026-04-03T11:22:55+00:00","urgentFlags":["missile","drone"]},{"channel":"wartranslated","text":"Ukraine says air defenses have neutralized 26 missiles and 515 drones after a massive attack. In total, 579 aerial threats were recorded, including 10 Iskander-M ballistic missiles, 25 Kh-101 cruise m","views":741,"date":"2026-04-03T13:09:55+00:00","urgentFlags":["missile","drone"]},{"channel":"wartranslated","text":"RFI says Ukraine has bases in Libya to counter Russia, citing sources. It claims 200+ Ukrainian officers and experts are there with Tripoli’s approval and are training Libyan troops on drones. RFI als","views":668,"date":"2026-04-03T14:15:11+00:00","urgentFlags":["strike","drone"]},{"channel":"CIG_telegram","text":"🇺🇸⚔️🇮🇷 Additional footage shows a U.S. MQ‑9 Reaper drone and an A‑10C Thunderbolt II attack aircraft providing support for a likely C-SAR operation in Iran.\n\n🔗 Egypt's Intel Observer (@EGYOSINT)","views":8140.000000000001,"date":"2026-04-03T12:11:18+00:00","urgentFlags":["drone"]},{"channel":"CIG_telegram","text":"🇺🇸⚔️🇮🇷 An F-35 II Lightning fighter jet and an MQ-9 Reaper were spotted flying over Iran supporting ongoing search & rescue efforts.\n\nIranian channels reports a mass mobilization among not just th","views":7730,"date":"2026-04-03T11:52:28+00:00","urgentFlags":["mobilization"]},{"channel":"wartranslated","text":"Zelensky says no single country can lift the Strait of Hormuz blockade alone and only joint action can work. He points to Ukraine’s Black Sea grain corridor as a model and says Kyiv is ready to help w","views":662,"date":"2026-04-03T13:56:58+00:00","urgentFlags":["intercept","blockade"]},{"channel":"CIG_telegram","text":"—❗️🇺🇸/🇮🇷 BREAKING: Axios now confirms that an American F-15E fighter jet was shot down in Iran, and that rescue efforts are ‘ongoing’\n\n@Middle_East_Spectator","views":5950,"date":"2026-04-03T13:04:19+00:00","urgentFlags":["breaking"]},{"channel":"ukraine_frontline","text":"‼️🔥⚠️ Heavy artilery bombardment over Kharkov, Ukraine early morning 02.28.22.\nt.me/ukraine_frontline","views":2890,"date":"2022-02-28T10:03:27+00:00","urgentFlags":["bombardment"]}],"topPosts":[{"channel":"intelslava","text":"🇮🇷🇮🇱The strike of Iranian ballistic missiles on Petah Tikva precisely hit a drone production plant belonging to the Israeli company AeroSol.","views":33300,"date":"2026-04-03T10:13:58+00:00","urgentFlags":[]},{"channel":"intelslava","text":"🇺🇸🇮🇷Trump announced new strikes on Iran. He confirmed that they attacked several bridges, and the next targets will be the energy sector.\n\nAll of this is in the event that Iran does not agree to a","views":33900,"date":"2026-04-03T10:14:47+00:00","urgentFlags":[]}]},"who":[],"fred":[{"id":"DFF","label":"Fed Funds Rate","value":3.64,"date":"2026-04-01","recent":[3.64,3.64,3.64,3.64,3.64]},{"id":"DGS2","label":"2-Year Treasury Yield","value":3.81,"date":"2026-04-01","recent":[3.81,3.79,3.82,3.88,3.96]},{"id":"DGS10","label":"10-Year Treasury Yield","value":4.33,"date":"2026-04-01","recent":[4.33,4.3,4.35,4.44,4.42]},{"id":"DGS30","label":"30-Year Treasury Yield","value":4.91,"date":"2026-04-01","recent":[4.91,4.88,4.91,4.98,4.93]},{"id":"T10Y2Y","label":"10Y-2Y Spread (Yield Curve)","value":0.52,"date":"2026-04-02","recent":[0.52,0.52,0.51,0.53,0.56]},{"id":"T10Y3M","label":"10Y-3M Spread","value":0.61,"date":"2026-04-02","recent":[0.61,0.63,0.6,0.64,0.71]},{"id":"CPIAUCSL","label":"CPI All Items","value":327.46,"date":"2026-02-01","recent":[327.46,326.588]},{"id":"CPILFESL","label":"Core CPI (ex Food & Energy)","value":333.512,"date":"2026-02-01","recent":[333.512,332.793]},{"id":"PCEPI","label":"PCE Price Index","value":128.969,"date":"2026-01-01","recent":[128.969]},{"id":"MICH","label":"Michigan Inflation Expectations","value":3.4,"date":"2026-02-01","recent":[3.4,4]},{"id":"UNRATE","label":"Unemployment Rate","value":4.3,"date":"2026-03-01","recent":[4.3,4.4,4.3]},{"id":"PAYEMS","label":"Nonfarm Payrolls","value":158637,"date":"2026-03-01","recent":[158637,158459,158592]},{"id":"ICSA","label":"Initial Jobless Claims","value":202000,"date":"2026-03-28","recent":[202000,211000,205000,213000,214000]},{"id":"M2SL","label":"M2 Money Supply","value":22667.3,"date":"2026-02-01","recent":[22667.3,22469.1]},{"id":"WALCL","label":"Fed Balance Sheet Total Assets","value":6675344,"date":"2026-04-01","recent":[6675344,6657161,6655939,6646344,6628894]},{"id":"VIXCLS","label":"VIX (Fear Index)","value":24.54,"date":"2026-04-01","recent":[24.54,25.25,30.61,31.05,27.44]},{"id":"BAMLH0A0HYM2","label":"High Yield Spread (Credit Stress)","value":3.16,"date":"2026-04-01","recent":[3.16,3.28,3.46,3.42,3.21]},{"id":"DCOILWTICO","label":"WTI Crude Oil","value":104.69,"date":"2026-03-30","recent":[104.69,101.26,96.18,91.51,93.18]},{"id":"MORTGAGE30US","label":"30-Year Mortgage Rate","value":6.46,"date":"2026-04-02","recent":[6.46,6.38,6.22,6.11,6]},{"id":"DTWEXBGS","label":"USD Trade Weighted Index","value":120.8851,"date":"2026-03-27","recent":[120.8851,120.389,120.1282,120.1295,119.9371]}],"energy":{"wti":112.06,"brent":109.05,"natgas":2.81,"crudeStocks":461636,"wtiRecent":[102.88,101.38,100.12,111.54],"signals":["WTI crude above $100 at $104.69/bbl","Brent-WTI spread wide at $17.19 — supply/logistics divergence","Large crude inventory build: +5.5M barrels"]},"bls":[{"id":"CUUR0000SA0","label":"CPI-U All Items","value":326.785,"period":"2026-M02","date":"2026-02","momChange":1.533,"momChangePct":0.4713},{"id":"CUUR0000SA0L1E","label":"CPI-U Core (ex Food & Energy)","value":333.242,"period":"2026-M02","date":"2026-02","momChange":1.292,"momChangePct":0.3892},{"id":"LNS14000000","label":"Unemployment Rate","value":4.3,"period":"2026-M03","date":"2026-03","momChange":-0.1,"momChangePct":-2.2727},{"id":"CES0000000001","label":"Nonfarm Payrolls (thousands)","value":158637,"period":"2026-M03","date":"2026-03","momChange":178,"momChangePct":0.1123},{"id":"WPUFD49104","label":"PPI Final Demand","value":152.168,"period":"2026-M02","date":"2026-02","momChange":0.885,"momChangePct":0.585}],"treasury":{"totalDebt":"39016191534959.54","signals":["National debt at $39.02T"]},"gscpi":{"value":0.49,"date":"2026-02","interpretation":"above average"},"defense":[{"recipient":"LAWRENCE LIVERMORE NATIONAL SECURITY, LL","amount":40777168345.14,"desc":"TAS::89 0240::TAS THIS PERFORMANCE-BASED MANAGEMENT CONTRACT (PBMC) IS FOR THE M"},{"recipient":"FLUOR MARINE PROPULSION, LLC","amount":14773195999.25,"desc":"MANAGEMENT AND OPERATION OF THE NAVAL NUCLEAR LABORATORY AND NAVAL NUCLEAR PROPU"},{"recipient":"THE BOEING COMPANY","amount":10462406426,"desc":"PROVIDE DEVELOPMENTAL HARDWARE AND TEST ARTICLES, AND MANUFACTURE AND ASSEMBLE A"},{"recipient":"NORTHROP GRUMMAN SYSTEMS CORPORATION","amount":4420784857,"desc":"FIRST DDT AND E, ARES I-X, AND FLIGHT TESTS.  FIRST STAGE WILL BE A FIVE SEGMENT"},{"recipient":"THE BOEING COMPANY","amount":2382243189,"desc":"SPACE LAUNCH SYSTEM (SLS) STAGES PRODUCTION AND EVOLUTION CONTRACT (SPEC)"}],"noaa":{"totalAlerts":0,"alerts":[]},"epa":{"totalReadings":0,"stations":[]},"acled":{"totalEvents":0,"totalFatalities":0,"byRegion":{},"byType":{},"deadliestEvents":[]},"gdelt":{"totalArticles":0,"conflicts":0,"economy":0,"health":0,"crisis":0,"topTitles":[],"geoPoints":[]},"space":{"totalNewObjects":343,"militarySats":22,"militaryByCountry":{"UNK":22},"constellations":{"starlink":10119,"oneweb":651},"iss":{"name":"ISS (ZARYA)","noradId":25544,"inclination":51.6327,"epoch":"2026-04-03T02:25:58.213344"},"issPosition":{"lat":14.74,"lon":60.19,"name":"ISS (ZARYA)"},"stationPositions":[{"lat":14.74,"lon":60.19,"name":"ISS (ZARYA)"},{"lat":14.74,"lon":60.19,"name":"POISK"},{"lat":-39.63,"lon":-146.58,"name":"CSS (TIANHE)"},{"lat":14.74,"lon":60.19,"name":"ISS (NAUKA)"},{"lat":-12.04,"lon":88.33,"name":"FREGAT DEB"}],"recentLaunches":[{"name":"ELECTRON KICK STAGE R/B","epoch":"2026-04-03T10:37:35.976864"},{"name":"STARLINK-37058","epoch":"2026-04-03T07:46:56.298144"},{"name":"CZ-8A R/B","epoch":"2026-04-03T07:28:54.487200"},{"name":"STARLINK-36244","epoch":"2026-04-03T07:27:33.442272"},{"name":"2026-052A","epoch":"2026-04-03T07:26:12.242688"},{"name":"YUXING-3 06","epoch":"2026-04-03T07:23:30.781824"},{"name":"STARLINK-36241","epoch":"2026-04-03T07:21:57.610656"},{"name":"STARLINK-37127","epoch":"2026-04-03T07:21:36.080640"},{"name":"2026-052C","epoch":"2026-04-03T07:21:17.870976"},{"name":"2026-052D","epoch":"2026-04-03T07:18:05.770944"}],"launchByCountry":{"UNK":343},"signals":["HIGH LAUNCH TEMPO: 343 new objects tracked in last 30 days","STARLINK MEGA-CONSTELLATION: 10119 active satellites"]},"health":[{"n":"OpenSky","err":false,"stale":false},{"n":"FIRMS","err":false,"stale":false},{"n":"Maritime","err":false,"stale":false},{"n":"Safecast","err":false,"stale":false},{"n":"ACLED","err":true,"stale":false},{"n":"ReliefWeb","err":false,"stale":false},{"n":"WHO","err":false,"stale":false},{"n":"OFAC","err":false,"stale":false},{"n":"OpenSanctions","err":false,"stale":false},{"n":"ADS-B","err":false,"stale":false},{"n":"FRED","err":false,"stale":false},{"n":"Treasury","err":false,"stale":false},{"n":"BLS","err":false,"stale":false},{"n":"EIA","err":false,"stale":false},{"n":"GSCPI","err":false,"stale":false},{"n":"USAspending","err":false,"stale":false},{"n":"Comtrade","err":false,"stale":false},{"n":"NOAA","err":false,"stale":false},{"n":"EPA","err":false,"stale":false},{"n":"Patents","err":false,"stale":false},{"n":"Bluesky","err":false,"stale":false},{"n":"Reddit","err":false,"stale":false},{"n":"Telegram","err":false,"stale":false},{"n":"KiwiSDR","err":false,"stale":false},{"n":"Space","err":false,"stale":false},{"n":"YFinance","err":false,"stale":false},{"n":"CISA-KEV","err":false,"stale":false},{"n":"Cloudflare-Radar","err":false,"stale":false}],"news":[{"title":"Bolivia: probe into ring that stole and adulterated fuel imported through Chilean ports","source":"MercoPress","date":"Wed, 01 Apr 2026 10:37:00 GMT","url":"https://en.mercopress.com/2026/04/01/bolivia-probe-into-ring-that-stole-and-adulterated-fuel-imported-through-chilean-ports?utm_source=feed&utm_medium=rss&utm_content=latin-america&utm_campaign=rss","lat":-34.81161432550125,"lon":-71.94455413872535,"region":"Chile"},{"title":"Brazil hit hardest as Latin America adjusts to Trump tariffs after one year","source":"MercoPress","date":"Mon, 30 Mar 2026 15:01:00 GMT","url":"https://en.mercopress.com/2026/03/30/brazil-hit-hardest-as-latin-america-adjusts-to-trump-tariffs-after-one-year?utm_source=feed&utm_medium=rss&utm_content=latin-america&utm_campaign=rss","lat":-13.722939434973625,"lon":-51.73457896188707,"region":"Brazil"},{"title":"Will challenge Gujarat UCC in court: AIMPLB","source":"Indian Express","date":"Fri, 03 Apr 2026 15:16:15 +0000","url":"https://indianexpress.com/article/india/aimplb-challenge-gujarat-ucc-bill-high-court-constitutionally-flawed-10617804/","lat":28.43814557970436,"lon":76.98811638736568,"region":"India"},{"title":"EC suspends West Bengal official for canvassing for TMC","source":"Indian Express","date":"Fri, 03 Apr 2026 14:56:37 +0000","url":"https://indianexpress.com/article/india/ec-suspends-west-bengal-official-for-canvassing-for-tmc-10617769/","lat":28.159093746635413,"lon":77.95716560157726,"region":"India"},{"title":"What Trump's 100 per cent pharmaceutical tariff means for Australia","source":"SBS Australia","date":"Fri, 3 Apr 2026 00:16:59 +0000","url":"https://www.sbs.com.au/news/article/trump-puts-100-per-cent-tariff-on-pharmaceutical-imports/8tlh6pxha","lat":-25.985459271712585,"lon":133.52672704134727,"region":"Australia"},{"title":"A 'wake-up call': How can Australia realistically reduce its reliance on oil?","source":"SBS Australia","date":"Thu, 2 Apr 2026 18:33:54 +0000","url":"https://www.sbs.com.au/news/article/australia-reduce-reliance-on-oil/vjkuuh0f2","lat":-24.784009969727375,"lon":134.53929188641516,"region":"Australia"},{"title":"Iran War Live Updates: American Fighter Jet Downed Over Iran, U.S. Officials Say","source":"NYT","date":"Fri, 03 Apr 2026 16:15:03 +0000","url":"https://www.nytimes.com/live/2026/04/03/world/iran-war-trump-oil","lat":31.68837142833114,"lon":53.386185981517805,"region":"Iran"},{"title":"Baltic Sea strikes: How Ukraine aims to undermine Russia's oil profits from Iran war","source":"France 24","date":"Fri, 03 Apr 2026 16:03:45 GMT","url":"https://www.france24.com/en/europe/20260403-baltic-sea-strikes-how-ukraine-aims-to-undermine-russia-oil-profits-from-iran-war","lat":48.750125643320835,"lon":31.50405983830201,"region":"Ukraine"},{"title":"Fact check: How can a country actually withdraw from NATO?","source":"Euronews","date":"Fri, 03 Apr 2026 18:00:44 +0200","url":"http://www.euronews.com/my-europe/2026/04/03/fact-check-how-can-a-country-actually-withdraw-from-nato","lat":50.20353285633464,"lon":3.8121191043998612,"region":"NATO"},{"title":"Drone footage shows a factory in Israel damaged by Iranian missile debris","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:51:15 +0000","url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/drone-footage-shows-a-factory-in-israel-damaged-by-iranian-missile-debris?traffic_source=rss","lat":31.75995094400568,"lon":53.40997892086658,"region":"Iran"},{"title":"Trump seeks historic $1.5 trillion for military in Congress budget request","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:48:57 +0000","url":"https://www.aljazeera.com/news/2026/4/3/trump-seeks-historic-1-5-trillion-for-military-in-congress-budget-request?traffic_source=rss","lat":38.64917710837783,"lon":-77.55690888766377,"region":"Trump"},{"title":"Trump seeks massive $1.5tn for defence alongside cuts in domestic spending","source":"BBC","date":"Fri, 03 Apr 2026 15:45:25 GMT","url":"https://www.bbc.com/news/articles/crr1q4kjvn2o?at_medium=RSS&amp;at_campaign=rss","lat":38.69376446111843,"lon":-76.46425528541243,"region":"Trump"},{"title":"Ukraine slows enemy advances, liberates land, drains Russia’s war chest","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:44:16 +0000","url":"https://www.aljazeera.com/features/2026/4/3/ukraine-slows-enemy-advances-liberates-land-drains-russias-war-chest?traffic_source=rss","lat":48.00033817379557,"lon":31.64314089243382,"region":"Ukraine"},{"title":"Iranian forces launch search for crew of downed US fighter jet","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:43:22 +0000","url":"https://www.aljazeera.com/news/2026/4/3/iranian-forces-launch-search-for-pilot-of-downed-us-fighter-jet?traffic_source=rss","lat":32.44979451205133,"lon":52.64848869364308,"region":"Iran"},{"title":"Iranian media outlets say helicopters are searching for the crew of the downed jet.","source":"NYT","date":"Fri, 03 Apr 2026 15:30:47 +0000","url":"https://www.nytimes.com/live/2026/04/03/world/iran-war-trump-oil/iranian-media-outlets-say-helicopters-are-searching-for-the-crew-of-the-downed-jet","lat":31.330671466694223,"lon":53.840079179715744,"region":"Iran"},{"title":"On the ground: 'Massive explosion' rocks northern Tehran","source":"France 24","date":"Fri, 03 Apr 2026 15:26:45 GMT","url":"https://www.france24.com/en/video/20260403-on-the-ground-massive-explosion-rocks-northern-tehran","lat":35.254661607828666,"lon":52.332822213612246,"region":"Tehran"},{"title":"Trump says with more time, US can ‘take the oil’ in Iran","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:18:34 +0000","url":"https://www.aljazeera.com/news/2026/4/3/trump-says-with-more-time-us-can-take-the-oil-in-iran?traffic_source=rss","lat":31.11176059103011,"lon":53.3094389390466,"region":"Iran"},{"title":"Panama Papers: 10 years on","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:17:26 +0000","url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/panama-papers-10-years-on?traffic_source=rss","lat":9.841154610691891,"lon":-79.24903356034724,"region":"Panama"},{"title":"Rare mountain bongos return to Kenya","source":"Africa News","date":"Fri, 03 Apr 2026 15:14:55 +0000","url":"http://www.africanews.com/2026/04/03/rare-mountain-bongos-return-to-kenya/","lat":-0.08726543010088461,"lon":38.30757729570934,"region":"Kenya"},{"title":"Red Crescent supply warehouse attacked in southwest Iran","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:13:12 +0000","url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/red-crescent-supply-warehouse-attacked-in-southwest-iran?traffic_source=rss","lat":32.865532313927275,"lon":52.088459318056,"region":"Iran"},{"title":"Iran release videos of US aircraft searching for pilots shot down in Iran","source":"Al Jazeera","date":"Fri, 03 Apr 2026 15:11:44 +0000","url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/iran-release-videos-of-us-aircraft-searching-for-pilots-shot-down-in-iran?traffic_source=rss","lat":32.36467177720083,"lon":53.82531149346571,"region":"Iran"},{"title":"US launches rescue operation after state TV says American fighter jet downed in Iran","source":"Euronews","date":"Fri, 03 Apr 2026 17:06:09 +0200","url":"http://www.euronews.com/2026/04/03/media-say-army-searching-for-pilot-of-us-fighter-jet-allegedly-downed-over-iran","lat":32.682288924856394,"lon":52.76996036075043,"region":"Iran"},{"title":"Italy's famed Uffizi admits cyber-attack but denies security breach","source":"BBC","date":"Fri, 03 Apr 2026 15:04:39 GMT","url":"https://www.bbc.com/news/articles/cy51wzeq6g5o?at_medium=RSS&amp;at_campaign=rss","lat":42.57358619647256,"lon":11.495160364862468,"region":"Italy"},{"title":"Cuba Says It Is Pardoning More Than 2,000 Prisoners","source":"NYT","date":"Fri, 03 Apr 2026 14:59:02 +0000","url":"https://www.nytimes.com/2026/04/02/world/americas/cuba-prisoner-release.html","lat":21.495322324268997,"lon":-80.22165700386736,"region":"Cuba"},{"title":"How Do You Count 1.4 Billion People? India Is Trying.","source":"NYT","date":"Fri, 03 Apr 2026 14:56:41 +0000","url":"https://www.nytimes.com/2026/04/03/world/asia/india-census-population.html","lat":19.250502417473236,"lon":77.94223986988854,"region":"India"},{"title":"A U.S. jet goes down over Iran, a U.S. official confirms","source":"NPR","date":"Fri, 03 Apr 2026 10:46:48 -0400","url":"https://www.npr.org/2026/04/03/nx-s1-5773108/american-jet-shot-down-iran","lat":31.92406787760425,"lon":52.70960435955099,"region":"Iran"},{"title":"Israel threatens to destroy more Lebanon bridges as crisis mounts","source":"Al Jazeera","date":"Fri, 03 Apr 2026 14:43:39 +0000","url":"https://www.aljazeera.com/news/2026/4/3/israel-threatens-to-destroy-more-lebanon-bridges-as-crisis-mounts?traffic_source=rss","lat":32.277641926454535,"lon":35.99471663448209,"region":"Israel"},{"title":"France's Ligue 1 trials live broadcast of ref exchanges in PSG-Toulouse clash","source":"RFI","date":"Fri, 03 Apr 2026 14:35:25 GMT","url":"https://www.rfi.fr/en/sports/20260403-france-s-ligue-1-trials-live-broadcast-of-ref-exchanges-in-psg-toulouse-clash","lat":46.87705647591926,"lon":1.154412300217873,"region":"France"},{"title":"Rome court rules Netflix price hikes illegal, opening door to €500 refunds","source":"Euronews","date":"Fri, 03 Apr 2026 16:35:16 +0200","url":"http://www.euronews.com/business/2026/04/03/rome-court-rules-netflix-price-hikes-illegal-opening-door-to-500-refunds","lat":41.78872903967678,"lon":11.957164564910382,"region":"Rome"},{"title":"Mirwaiz flags ‘civilian killing’ in Ganderbal – ‘Killed in cold blood’","source":"Indian Express","date":"Fri, 03 Apr 2026 14:21:45 +0000","url":"https://indianexpress.com/article/india/mirwaiz-flags-civilian-killing-curbs-on-jamia-masjid-killed-in-cold-blood-10617729/","lat":28.049331642194076,"lon":76.55455787245545,"region":"India"},{"title":"Cuba to release more than 2,000 prisoners as US pressure mounts","source":"BBC","date":"Fri, 03 Apr 2026 14:18:04 GMT","url":"https://www.bbc.com/news/articles/cwy3r3w4zl8o?at_medium=RSS&amp;at_campaign=rss","lat":21.934263858798072,"lon":-79.18288583805432,"region":"Cuba"},{"title":"New Paris mayor vows to end all sexual violence in schools with €20ml action plan","source":"Euronews","date":"Fri, 03 Apr 2026 16:17:45 +0200","url":"http://www.euronews.com/2026/04/03/new-paris-mayor-vows-to-end-all-sexual-violence-in-schools-with-20ml-action-plan","lat":49.490583921286074,"lon":2.4278675508276755,"region":"Paris"},{"title":"How a Russian influence network is spreading anti-Ukrainian propaganda in Ivory Coast","source":"France 24","date":"Fri, 03 Apr 2026 14:17:04 GMT","url":"https://www.france24.com/en/africa/20260403-russian-influence-network-spreading-anti-ukrainian-propaganda-ivory-coast","lat":55.84486600546132,"lon":37.24980962717258,"region":"Russia"},{"title":"From 250 to 700 dollars per article: How Russia influenced West African media content","source":"France 24","date":"Fri, 03 Apr 2026 14:16:36 GMT","url":"https://www.france24.com/en/africa/20260403-article-russia-influenced-west-african-media-content","lat":56.5111071343658,"lon":38.545908476640946,"region":"Russia"},{"title":"Elephant herd goes on rampage in Jharkhand villages: 3 men killed, a woman injured in 1 day","source":"Indian Express","date":"Fri, 03 Apr 2026 14:10:02 +0000","url":"https://indianexpress.com/article/india/jharkhand-ramgarh-elephant-attacks-gola-forest-deaths-compensation-protest-10617717/","lat":27.9305890619843,"lon":76.41769853908099,"region":"India"},{"title":"Border town of Tiné caught in the crossfire as Sudan war spills into Chad","source":"France 24","date":"Fri, 03 Apr 2026 13:56:57 GMT","url":"https://www.france24.com/en/tv-shows/focus/20260403-tin%C3%A9-caught-in-the-crossfire-war-in-sudan-spilling-over-into-chad","lat":13.489752227657167,"lon":29.411970212979814,"region":"Sudan"},{"title":"Trump says US can open Hormuz with 'a little more time' and asks Congress for $1.5tr for defence","source":"Euronews","date":"Fri, 03 Apr 2026 15:39:31 +0200","url":"http://www.euronews.com/2026/04/03/trump-says-us-can-open-hormuz-with-a-little-more-time-and-asks-congress-for-15tr-for-defen","lat":39.283396005178645,"lon":-97.20739225909496,"region":"US"},{"title":"US jobs surge unexpectedly in March despite Iran war","source":"BBC","date":"Fri, 03 Apr 2026 13:35:11 GMT","url":"https://www.bbc.com/news/articles/crk165g4vv3o?at_medium=RSS&amp;at_campaign=rss","lat":32.10040367081072,"lon":52.7395243584897,"region":"Iran"},{"title":"Finnish conscripts train for all-out war with Russia","source":"Euronews","date":"Fri, 03 Apr 2026 15:34:40 +0200","url":"http://www.euronews.com/2026/04/03/finnish-conscripts-train-for-all-out-war-with-russia","lat":56.12826509899116,"lon":37.81747916130468,"region":"Russia"},{"title":"Italy's head coach quits after team fails to qualify for World Cup","source":"France 24","date":"Fri, 03 Apr 2026 13:34:36 GMT","url":"https://www.france24.com/en/sport/20260403-italy-head-coach-quits-after-team-fails-to-qualify-for-world-cup","lat":42.180753019790885,"lon":11.896210150032074,"region":"Italy"},{"title":"Congo declares end of two-year mpox outbreak that killed over 2,000","source":"Africa News","date":"Fri, 03 Apr 2026 13:29:03 +0000","url":"http://www.africanews.com/2026/04/03/congo-declares-end-of-two-year-mpox-outbreak-that-killed-over-2000/","lat":-3.515887276744196,"lon":21.090991751335505,"region":"Congo"},{"title":"Danish Warship Sunk by Britain’s Lord Nelson 225 Years Ago Is Found","source":"NYT","date":"Fri, 03 Apr 2026 13:28:59 +0000","url":"https://www.nytimes.com/2026/04/02/world/europe/danish-warship-britain-nelson-copenhagen.html","lat":53.756760791396005,"lon":-2.152247816600729,"region":"Britain"},{"title":"&#8216;Allocate a day in each House session to discuss issues related to women&#8217;: SP&#8217;s Iq","source":"Indian Express","date":"Fri, 03 Apr 2026 13:25:02 +0000","url":"https://indianexpress.com/article/india/iqra-choudhary-letter-om-birla-lok-sabha-women-child-development-dedicated-day-10617599/","lat":28.91668577375544,"lon":77.74896836526128,"region":"India"},{"title":"Gattuso out as Italy’s coach after failure to qualify for 2026 World Cup","source":"Al Jazeera","date":"Fri, 03 Apr 2026 13:17:23 +0000","url":"https://www.aljazeera.com/sports/2026/4/3/gattuso-out-as-italys-coach-after-failure-to-qualify-for-2026-world-cup?traffic_source=rss","lat":41.692881886306374,"lon":11.673611150917017,"region":"Italy"},{"title":"Experts dispute US account of deadly Iran sports hall strike in Lamerd","source":"BBC","date":"Fri, 03 Apr 2026 13:16:33 GMT","url":"https://www.bbc.com/news/articles/c4gx8e1x5j3o?at_medium=RSS&amp;at_campaign=rss","lat":32.48749589296635,"lon":52.53228572040381,"region":"Iran"},{"title":"Islamist rebels kill at least 43 in overnight raid in DR Congo","source":"Africa News","date":"Fri, 03 Apr 2026 13:13:33 +0000","url":"http://www.africanews.com/2026/04/03/islamist-rebels-kill-at-least-43-in-overnight-raid-in-dr-congo/","lat":-4.2796724344660895,"lon":21.48822883582613,"region":"Congo"},{"title":"Trump budget seeks $1.5 trillion in defense spending alongside domestic program cuts","source":"NPR","date":"Fri, 03 Apr 2026 09:08:05 -0400","url":"https://www.npr.org/2026/04/03/nx-s1-5772701/trump-budget-defense-spending","lat":39.51370894509898,"lon":-76.55925889668224,"region":"Trump"},{"title":"Italy part company with manager after failing to qualify for World Cup","source":"BBC","date":"Fri, 03 Apr 2026 13:04:44 GMT","url":"https://www.bbc.com/sport/football/articles/cevk0mn93ejo?at_medium=RSS&amp;at_campaign=rss","lat":42.03002490896037,"lon":12.140717161076905,"region":"Italy"},{"title":"Pete Hegseth asks US Army's top general to step down","source":"BBC","date":"Fri, 03 Apr 2026 13:03:57 GMT","url":"https://www.bbc.com/news/articles/cn8d63v058zo?at_medium=RSS&amp;at_campaign=rss","lat":38.95242472819529,"lon":-97.64321087224609,"region":"US"},{"title":"A young girl’s murder unravels into macabre ‘sacrificial killing’, turning Hazaribagh into political","source":"Indian Express","date":"Fri, 03 Apr 2026 12:57:15 +0000","url":"https://indianexpress.com/article/india/young-girl-murder-sacrificial-killing-hazaribagh-10617593/","lat":29.237356161532336,"lon":77.45887687651887,"region":"India"}],"markets":{"indexes":[{"symbol":"^GSPC","name":"S&P 500","price":6582.69,"change":105.53,"changePct":1.63,"history":[{"date":"2026-03-27","close":6368.85},{"date":"2026-03-30","close":6343.72},{"date":"2026-03-31","close":6528.52},{"date":"2026-04-01","close":6575.32},{"date":"2026-04-02","close":6582.69}]},{"symbol":"^IXIC","name":"Nasdaq Composite","price":21879.18,"change":471.1,"changePct":2.2,"history":[{"date":"2026-03-27","close":20948.36},{"date":"2026-03-30","close":20794.64},{"date":"2026-03-31","close":21590.63},{"date":"2026-04-01","close":21840.95},{"date":"2026-04-02","close":21879.18}]},{"symbol":"^DJI","name":"Dow Jones","price":46504.67,"change":544.56,"changePct":1.18,"history":[{"date":"2026-03-27","close":45166.64},{"date":"2026-03-30","close":45216.14},{"date":"2026-03-31","close":46341.51},{"date":"2026-04-01","close":46565.74},{"date":"2026-04-02","close":46504.67}]},{"symbol":"^RUT","name":"Russell 2000","price":2530.04,"change":36.72,"changePct":1.47,"history":[{"date":"2026-03-27","close":2449.7},{"date":"2026-03-30","close":2414.01},{"date":"2026-03-31","close":2496.37},{"date":"2026-04-01","close":2512.37},{"date":"2026-04-02","close":2530.04}]}],"rates":[{"symbol":"TLT","name":"20Y+ Treasury","price":86.79,"change":0.68,"changePct":0.79},{"symbol":"HYG","name":"High Yield Corp","price":79.56,"change":0.64,"changePct":0.81},{"symbol":"LQD","name":"IG Corporate","price":109.12,"change":1.24,"changePct":1.15}],"commodities":[{"symbol":"GC=F","name":"Gold","price":4702.7,"change":176.7,"changePct":3.9,"history":[{"date":"2026-03-30","close":4526},{"date":"2026-03-31","close":4647.6},{"date":"2026-04-01","close":4783.2},{"date":"2026-04-02","close":4651.5}]},{"symbol":"SI=F","name":"Silver","price":73.17,"change":2.85,"changePct":4.05,"history":[{"date":"2026-03-30","close":70.32},{"date":"2026-03-31","close":74.69},{"date":"2026-04-01","close":75.87},{"date":"2026-04-02","close":72.74}]},{"symbol":"CL=F","name":"WTI Crude","price":112.06,"change":9.18,"changePct":8.92,"history":[{"date":"2026-03-30","close":102.88},{"date":"2026-03-31","close":101.38},{"date":"2026-04-01","close":100.12},{"date":"2026-04-02","close":111.54}]},{"symbol":"BZ=F","name":"Brent Crude","price":109.05,"change":-3.73,"changePct":-3.31,"history":[{"date":"2026-03-30","close":112.78},{"date":"2026-03-31","close":118.35},{"date":"2026-04-01","close":101.16},{"date":"2026-04-02","close":109.03}]},{"symbol":"NG=F","name":"Natural Gas","price":2.81,"change":-0.08,"changePct":-2.77,"history":[{"date":"2026-03-30","close":2.89},{"date":"2026-03-31","close":2.88},{"date":"2026-04-01","close":2.82},{"date":"2026-04-02","close":2.8}]}],"crypto":[{"symbol":"BTC-USD","name":"Bitcoin","price":66895.18,"change":203.73,"changePct":0.31},{"symbol":"ETH-USD","name":"Ethereum","price":2052.04,"change":28.52,"changePct":1.41}],"vix":{"value":23.87,"change":-6.74,"changePct":-22.02},"timestamp":"2026-04-03T16:17:41.213Z"},"ideas":[{"title":"Long crude on Iran escalation","type":"LONG","ticker":"CL=F","confidence":"HIGH","rationale":"Geopolitical escalation is acute: OSINT reports Iranian missile strikes in Israel and stated U.S. plans to target Iran’s energy sector if talks fail, while rescue ops involve F-35/MQ-9 after an F-15E shootdown. Oil is already elevated (WTI $112.06, Brent $109.05), and conflict expansion raises disruption risk in regional production/export flows. With VIX at 24.54 and above-average supply-chain stress (GSCPI 0.49), energy shock pass-through risk is high.","risk":"Rapid de-escalation or surprise diplomatic breakthrough could trigger a sharp oil risk-premium unwind.","horizon":"Days","signals":["WTI=112.06 and Brent=109.05 with active military escalation","U.S. warning of potential strikes on Iran energy sector"],"source":"llm"},{"title":"Long oil volatility convexity","type":"HEDGE","ticker":"BNO","confidence":"MEDIUM","rationale":"Brent-linked exposure is attractive as a hedge against further Middle East supply shocks given 1,271 thermal detections in the Middle East (51 high-confidence) and 134 aircraft tracked in-region. Elevated macro vol (VIX 24.54) and high USD (DTWEXBGS 120.8851) indicate broad risk repricing conditions where geopolitical oil spikes can gap higher. BNO provides cleaner Brent beta than broad equities.","risk":"Global demand fears or coordinated SPR/OPEC response could cap Brent upside despite conflict headlines.","horizon":"Days","signals":["Middle East thermal detections=1271 (51 high-conf)","AIR_ACTIVITY Middle East=134 aircraft"],"source":"llm"},{"title":"Long defense primes","type":"LONG","ticker":"ITA","confidence":"HIGH","rationale":"Conflict intensity is rising (Iran-Israel exchanges, U.S. strike signaling, active CSAR operations), supporting defense demand and procurement momentum. Contract flow is very strong: $10,462M to Boeing plus much larger nuclear/naval awards to Lawrence Livermore and Fluor Marine Propulsion, reinforcing sustained defense spending. ITA captures broad U.S. defense upside with less single-name risk.","risk":"If hostilities cool quickly, defense names may consolidate after headline-driven gains.","horizon":"Weeks","signals":["Defense contracts: $10.462B to Boeing, $40.777B LLNS, $14.773B Fluor Marine","Escalatory OSINT: missile strikes, rescue operations, threatened energy targeting"],"source":"llm"},{"title":"Short airlines on fuel shock","type":"SHORT","ticker":"JETS","confidence":"MEDIUM","rationale":"Jet-fuel input risk is rising with crude above $110 and active military escalation in the Middle East. Higher oil alongside elevated market volatility (VIX 24.54) pressures airline margins and demand sentiment simultaneously. Broad airline ETF exposure avoids idiosyncratic carrier noise while expressing energy-cost squeeze.","risk":"If fuel hedges and resilient travel demand dominate near term, airlines can outperform despite high crude.","horizon":"Days","signals":["WTI=112.06 and Brent=109.05 raise fuel costs","VIX=24.54 indicates risk-off pressure on cyclicals"],"source":"llm"},{"title":"Long inflation hedge via gold","type":"LONG","ticker":"GLD","confidence":"MEDIUM","rationale":"Geopolitical tail risk is intensifying and could reinforce inflation via energy, while CPI is already high (CUUR0000SA0=326.785) and core-like measure remains elevated (CUUR0000SA0L1E=333.242). Real-economy pressure signs (mortgage 6.46%, unemployment 4.3%) plus risk aversion (VIX 24.54) support defensive hard-asset allocation. GLD serves as a liquid hedge against conflict-driven macro instability.","risk":"A stronger dollar (DTWEXBGS 120.8851) and higher real yields could limit gold upside.","horizon":"Weeks","signals":["CPI level elevated: 326.785 with geopolitical energy shock risk","VIX=24.54 and USD index=120.8851 reflect macro stress regime"],"source":"llm"},{"title":"Avoid long duration Treasuries","type":"AVOID","ticker":"TLT","confidence":"HIGH","rationale":"Rates regime remains unfriendly to duration: 10Y yield is 4.33% with 2Y at 3.81% and Fed funds 3.64%, while curve is positively sloped (T10Y2Y=0.52), signaling no immediate deep-cut backdrop. Inflation-sensitive inputs remain firm (WTI $112.06; producer measure WPUFD49104=152.168), which can keep term premium elevated. Avoid adding long-duration exposure until inflation/energy pressures ease.","risk":"A sudden growth shock or sharp risk-off flight-to-quality could rally long bonds aggressively.","horizon":"Weeks","signals":["DGS10=4.33, DGS2=3.81, T10Y2Y=0.52","Oil at $112 and producer price index proxy at 152.168"],"source":"llm"}],"ideasSource":"llm","newsFeed":[{"headline":"Bolivia: probe into ring that stole and adulterated fuel imported through Chilean ports","source":"MercoPress","type":"rss","timestamp":"Wed, 01 Apr 2026 10:37:00 GMT","region":"Chile","urgent":false,"url":"https://en.mercopress.com/2026/04/01/bolivia-probe-into-ring-that-stole-and-adulterated-fuel-imported-through-chilean-ports?utm_source=feed&utm_medium=rss&utm_content=latin-america&utm_campaign=rss"},{"headline":"Brazil hit hardest as Latin America adjusts to Trump tariffs after one year","source":"MercoPress","type":"rss","timestamp":"Mon, 30 Mar 2026 15:01:00 GMT","region":"Brazil","urgent":false,"url":"https://en.mercopress.com/2026/03/30/brazil-hit-hardest-as-latin-america-adjusts-to-trump-tariffs-after-one-year?utm_source=feed&utm_medium=rss&utm_content=latin-america&utm_campaign=rss"},{"headline":"Will challenge Gujarat UCC in court: AIMPLB","source":"Indian Express","type":"rss","timestamp":"Fri, 03 Apr 2026 15:16:15 +0000","region":"India","urgent":false,"url":"https://indianexpress.com/article/india/aimplb-challenge-gujarat-ucc-bill-high-court-constitutionally-flawed-10617804/"},{"headline":"EC suspends West Bengal official for canvassing for TMC","source":"Indian Express","type":"rss","timestamp":"Fri, 03 Apr 2026 14:56:37 +0000","region":"India","urgent":false,"url":"https://indianexpress.com/article/india/ec-suspends-west-bengal-official-for-canvassing-for-tmc-10617769/"},{"headline":"What Trump's 100 per cent pharmaceutical tariff means for Australia","source":"SBS Australia","type":"rss","timestamp":"Fri, 3 Apr 2026 00:16:59 +0000","region":"Australia","urgent":false,"url":"https://www.sbs.com.au/news/article/trump-puts-100-per-cent-tariff-on-pharmaceutical-imports/8tlh6pxha"},{"headline":"A 'wake-up call': How can Australia realistically reduce its reliance on oil?","source":"SBS Australia","type":"rss","timestamp":"Thu, 2 Apr 2026 18:33:54 +0000","region":"Australia","urgent":false,"url":"https://www.sbs.com.au/news/article/australia-reduce-reliance-on-oil/vjkuuh0f2"},{"headline":"Iran War Live Updates: American Fighter Jet Downed Over Iran, U.S. Officials Say","source":"NYT","type":"rss","timestamp":"Fri, 03 Apr 2026 16:15:03 +0000","region":"Iran","urgent":false,"url":"https://www.nytimes.com/live/2026/04/03/world/iran-war-trump-oil"},{"headline":"Baltic Sea strikes: How Ukraine aims to undermine Russia's oil profits from Iran war","source":"France 24","type":"rss","timestamp":"Fri, 03 Apr 2026 16:03:45 GMT","region":"Ukraine","urgent":false,"url":"https://www.france24.com/en/europe/20260403-baltic-sea-strikes-how-ukraine-aims-to-undermine-russia-oil-profits-from-iran-war"},{"headline":"Fact check: How can a country actually withdraw from NATO?","source":"Euronews","type":"rss","timestamp":"Fri, 03 Apr 2026 18:00:44 +0200","region":"NATO","urgent":false,"url":"http://www.euronews.com/my-europe/2026/04/03/fact-check-how-can-a-country-actually-withdraw-from-nato"},{"headline":"Drone footage shows a factory in Israel damaged by Iranian missile debris","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:51:15 +0000","region":"Iran","urgent":false,"url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/drone-footage-shows-a-factory-in-israel-damaged-by-iranian-missile-debris?traffic_source=rss"},{"headline":"Trump seeks historic $1.5 trillion for military in Congress budget request","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:48:57 +0000","region":"Trump","urgent":false,"url":"https://www.aljazeera.com/news/2026/4/3/trump-seeks-historic-1-5-trillion-for-military-in-congress-budget-request?traffic_source=rss"},{"headline":"Trump seeks massive $1.5tn for defence alongside cuts in domestic spending","source":"BBC","type":"rss","timestamp":"Fri, 03 Apr 2026 15:45:25 GMT","region":"Trump","urgent":false,"url":"https://www.bbc.com/news/articles/crr1q4kjvn2o?at_medium=RSS&amp;at_campaign=rss"},{"headline":"Ukraine slows enemy advances, liberates land, drains Russia’s war chest","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:44:16 +0000","region":"Ukraine","urgent":false,"url":"https://www.aljazeera.com/features/2026/4/3/ukraine-slows-enemy-advances-liberates-land-drains-russias-war-chest?traffic_source=rss"},{"headline":"Iranian forces launch search for crew of downed US fighter jet","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:43:22 +0000","region":"Iran","urgent":false,"url":"https://www.aljazeera.com/news/2026/4/3/iranian-forces-launch-search-for-pilot-of-downed-us-fighter-jet?traffic_source=rss"},{"headline":"Iranian media outlets say helicopters are searching for the crew of the downed jet.","source":"NYT","type":"rss","timestamp":"Fri, 03 Apr 2026 15:30:47 +0000","region":"Iran","urgent":false,"url":"https://www.nytimes.com/live/2026/04/03/world/iran-war-trump-oil/iranian-media-outlets-say-helicopters-are-searching-for-the-crew-of-the-downed-jet"},{"headline":"On the ground: 'Massive explosion' rocks northern Tehran","source":"France 24","type":"rss","timestamp":"Fri, 03 Apr 2026 15:26:45 GMT","region":"Tehran","urgent":false,"url":"https://www.france24.com/en/video/20260403-on-the-ground-massive-explosion-rocks-northern-tehran"},{"headline":"Trump says with more time, US can ‘take the oil’ in Iran","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:18:34 +0000","region":"Iran","urgent":false,"url":"https://www.aljazeera.com/news/2026/4/3/trump-says-with-more-time-us-can-take-the-oil-in-iran?traffic_source=rss"},{"headline":"Panama Papers: 10 years on","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:17:26 +0000","region":"Panama","urgent":false,"url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/panama-papers-10-years-on?traffic_source=rss"},{"headline":"Rare mountain bongos return to Kenya","source":"Africa News","type":"rss","timestamp":"Fri, 03 Apr 2026 15:14:55 +0000","region":"Kenya","urgent":false,"url":"http://www.africanews.com/2026/04/03/rare-mountain-bongos-return-to-kenya/"},{"headline":"Red Crescent supply warehouse attacked in southwest Iran","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:13:12 +0000","region":"Iran","urgent":false,"url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/red-crescent-supply-warehouse-attacked-in-southwest-iran?traffic_source=rss"},{"headline":"Iran release videos of US aircraft searching for pilots shot down in Iran","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 15:11:44 +0000","region":"Iran","urgent":false,"url":"https://www.aljazeera.com/video/newsfeed/2026/4/3/iran-release-videos-of-us-aircraft-searching-for-pilots-shot-down-in-iran?traffic_source=rss"},{"headline":"US launches rescue operation after state TV says American fighter jet downed in Iran","source":"Euronews","type":"rss","timestamp":"Fri, 03 Apr 2026 17:06:09 +0200","region":"Iran","urgent":false,"url":"http://www.euronews.com/2026/04/03/media-say-army-searching-for-pilot-of-us-fighter-jet-allegedly-downed-over-iran"},{"headline":"Italy's famed Uffizi admits cyber-attack but denies security breach","source":"BBC","type":"rss","timestamp":"Fri, 03 Apr 2026 15:04:39 GMT","region":"Italy","urgent":false,"url":"https://www.bbc.com/news/articles/cy51wzeq6g5o?at_medium=RSS&amp;at_campaign=rss"},{"headline":"Cuba Says It Is Pardoning More Than 2,000 Prisoners","source":"NYT","type":"rss","timestamp":"Fri, 03 Apr 2026 14:59:02 +0000","region":"Cuba","urgent":false,"url":"https://www.nytimes.com/2026/04/02/world/americas/cuba-prisoner-release.html"},{"headline":"How Do You Count 1.4 Billion People? India Is Trying.","source":"NYT","type":"rss","timestamp":"Fri, 03 Apr 2026 14:56:41 +0000","region":"India","urgent":false,"url":"https://www.nytimes.com/2026/04/03/world/asia/india-census-population.html"},{"headline":"A U.S. jet goes down over Iran, a U.S. official confirms","source":"NPR","type":"rss","timestamp":"Fri, 03 Apr 2026 10:46:48 -0400","region":"Iran","urgent":false,"url":"https://www.npr.org/2026/04/03/nx-s1-5773108/american-jet-shot-down-iran"},{"headline":"Israel threatens to destroy more Lebanon bridges as crisis mounts","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 14:43:39 +0000","region":"Israel","urgent":false,"url":"https://www.aljazeera.com/news/2026/4/3/israel-threatens-to-destroy-more-lebanon-bridges-as-crisis-mounts?traffic_source=rss"},{"headline":"France's Ligue 1 trials live broadcast of ref exchanges in PSG-Toulouse clash","source":"RFI","type":"rss","timestamp":"Fri, 03 Apr 2026 14:35:25 GMT","region":"France","urgent":false,"url":"https://www.rfi.fr/en/sports/20260403-france-s-ligue-1-trials-live-broadcast-of-ref-exchanges-in-psg-toulouse-clash"},{"headline":"Rome court rules Netflix price hikes illegal, opening door to €500 refunds","source":"Euronews","type":"rss","timestamp":"Fri, 03 Apr 2026 16:35:16 +0200","region":"Rome","urgent":false,"url":"http://www.euronews.com/business/2026/04/03/rome-court-rules-netflix-price-hikes-illegal-opening-door-to-500-refunds"},{"headline":"Mirwaiz flags ‘civilian killing’ in Ganderbal – ‘Killed in cold blood’","source":"Indian Express","type":"rss","timestamp":"Fri, 03 Apr 2026 14:21:45 +0000","region":"India","urgent":false,"url":"https://indianexpress.com/article/india/mirwaiz-flags-civilian-killing-curbs-on-jamia-masjid-killed-in-cold-blood-10617729/"},{"headline":"Cuba to release more than 2,000 prisoners as US pressure mounts","source":"BBC","type":"rss","timestamp":"Fri, 03 Apr 2026 14:18:04 GMT","region":"Cuba","urgent":false,"url":"https://www.bbc.com/news/articles/cwy3r3w4zl8o?at_medium=RSS&amp;at_campaign=rss"},{"headline":"New Paris mayor vows to end all sexual violence in schools with €20ml action plan","source":"Euronews","type":"rss","timestamp":"Fri, 03 Apr 2026 16:17:45 +0200","region":"Paris","urgent":false,"url":"http://www.euronews.com/2026/04/03/new-paris-mayor-vows-to-end-all-sexual-violence-in-schools-with-20ml-action-plan"},{"headline":"How a Russian influence network is spreading anti-Ukrainian propaganda in Ivory Coast","source":"France 24","type":"rss","timestamp":"Fri, 03 Apr 2026 14:17:04 GMT","region":"Russia","urgent":false,"url":"https://www.france24.com/en/africa/20260403-russian-influence-network-spreading-anti-ukrainian-propaganda-ivory-coast"},{"headline":"From 250 to 700 dollars per article: How Russia influenced West African media content","source":"France 24","type":"rss","timestamp":"Fri, 03 Apr 2026 14:16:36 GMT","region":"Russia","urgent":false,"url":"https://www.france24.com/en/africa/20260403-article-russia-influenced-west-african-media-content"},{"headline":"RFI says Ukraine has bases in Libya to counter Russia, citing sources. It claims 200+ Ukrainian offi","source":"WARTRANSLATED","type":"telegram","timestamp":"2026-04-03T14:15:11+00:00","region":"OSINT","urgent":true},{"headline":"Elephant herd goes on rampage in Jharkhand villages: 3 men killed, a woman injured in 1 day","source":"Indian Express","type":"rss","timestamp":"Fri, 03 Apr 2026 14:10:02 +0000","region":"India","urgent":false,"url":"https://indianexpress.com/article/india/jharkhand-ramgarh-elephant-attacks-gola-forest-deaths-compensation-protest-10617717/"},{"headline":"Border town of Tiné caught in the crossfire as Sudan war spills into Chad","source":"France 24","type":"rss","timestamp":"Fri, 03 Apr 2026 13:56:57 GMT","region":"Sudan","urgent":false,"url":"https://www.france24.com/en/tv-shows/focus/20260403-tin%C3%A9-caught-in-the-crossfire-war-in-sudan-spilling-over-into-chad"},{"headline":"Trump says US can open Hormuz with 'a little more time' and asks Congress for $1.5tr for defence","source":"Euronews","type":"rss","timestamp":"Fri, 03 Apr 2026 15:39:31 +0200","region":"US","urgent":false,"url":"http://www.euronews.com/2026/04/03/trump-says-us-can-open-hormuz-with-a-little-more-time-and-asks-congress-for-15tr-for-defen"},{"headline":"US jobs surge unexpectedly in March despite Iran war","source":"BBC","type":"rss","timestamp":"Fri, 03 Apr 2026 13:35:11 GMT","region":"Iran","urgent":false,"url":"https://www.bbc.com/news/articles/crk165g4vv3o?at_medium=RSS&amp;at_campaign=rss"},{"headline":"Finnish conscripts train for all-out war with Russia","source":"Euronews","type":"rss","timestamp":"Fri, 03 Apr 2026 15:34:40 +0200","region":"Russia","urgent":false,"url":"http://www.euronews.com/2026/04/03/finnish-conscripts-train-for-all-out-war-with-russia"},{"headline":"Italy's head coach quits after team fails to qualify for World Cup","source":"France 24","type":"rss","timestamp":"Fri, 03 Apr 2026 13:34:36 GMT","region":"Italy","urgent":false,"url":"https://www.france24.com/en/sport/20260403-italy-head-coach-quits-after-team-fails-to-qualify-for-world-cup"},{"headline":"One \"Buk\" missile or its analogue could easily take out all three of them at once, not to mention mo","source":"INTELSLAVA","type":"telegram","timestamp":"2026-04-03T13:33:34+00:00","region":"OSINT","urgent":true},{"headline":"Congo declares end of two-year mpox outbreak that killed over 2,000","source":"Africa News","type":"rss","timestamp":"Fri, 03 Apr 2026 13:29:03 +0000","region":"Congo","urgent":false,"url":"http://www.africanews.com/2026/04/03/congo-declares-end-of-two-year-mpox-outbreak-that-killed-over-2000/"},{"headline":"Danish Warship Sunk by Britain’s Lord Nelson 225 Years Ago Is Found","source":"NYT","type":"rss","timestamp":"Fri, 03 Apr 2026 13:28:59 +0000","region":"Britain","urgent":false,"url":"https://www.nytimes.com/2026/04/02/world/europe/danish-warship-britain-nelson-copenhagen.html"},{"headline":"&#8216;Allocate a day in each House session to discuss issues related to women&#8217;: SP&#8217;s Iq","source":"Indian Express","type":"rss","timestamp":"Fri, 03 Apr 2026 13:25:02 +0000","region":"India","urgent":false,"url":"https://indianexpress.com/article/india/iqra-choudhary-letter-om-birla-lok-sabha-women-child-development-dedicated-day-10617599/"},{"headline":"Gattuso out as Italy’s coach after failure to qualify for 2026 World Cup","source":"Al Jazeera","type":"rss","timestamp":"Fri, 03 Apr 2026 13:17:23 +0000","region":"Italy","urgent":false,"url":"https://www.aljazeera.com/sports/2026/4/3/gattuso-out-as-italys-coach-after-failure-to-qualify-for-2026-world-cup?traffic_source=rss"},{"headline":"Experts dispute US account of deadly Iran sports hall strike in Lamerd","source":"BBC","type":"rss","timestamp":"Fri, 03 Apr 2026 13:16:33 GMT","region":"Iran","urgent":false,"url":"https://www.bbc.com/news/articles/c4gx8e1x5j3o?at_medium=RSS&amp;at_campaign=rss"},{"headline":"Islamist rebels kill at least 43 in overnight raid in DR Congo","source":"Africa News","type":"rss","timestamp":"Fri, 03 Apr 2026 13:13:33 +0000","region":"Congo","urgent":false,"url":"http://www.africanews.com/2026/04/03/islamist-rebels-kill-at-least-43-in-overnight-raid-in-dr-congo/"},{"headline":"Ukraine says air defenses have neutralized 26 missiles and 515 drones after a massive attack. In tot","source":"WARTRANSLATED","type":"telegram","timestamp":"2026-04-03T13:09:55+00:00","region":"OSINT","urgent":true},{"headline":"Trump budget seeks $1.5 trillion in defense spending alongside domestic program cuts","source":"NPR","type":"rss","timestamp":"Fri, 03 Apr 2026 09:08:05 -0400","region":"Trump","urgent":false,"url":"https://www.npr.org/2026/04/03/nx-s1-5772701/trump-budget-defense-spending"}]};
+let D = {"meta":{"version":"2.0.0","timestamp":"2026-04-03T16:18:10.188Z","totalDurationMs":30079,"sourcesQueried":29,"sourcesOk":28,"sourcesFailed":1},"air":[{"region":"Taiwan Strait","total":56,"noCallsign":5,"highAlt":4,"top":[["中國",19],["台灣",14],["韓國",10],["日本",5]]},{"region":"South China Sea","total":115,"noCallsign":5,"highAlt":3,"top":[["中國",56],["菲律賓",12],["馬來西亞",9],["日本",6]]},{"region":"Korean Peninsula","total":8,"noCallsign":0,"highAlt":3,"top":[["美國",4],["中國",1],["日本",1],["韓國",1]]},{"region":"East China Sea","total":42,"noCallsign":3,"highAlt":2,"top":[["日本",18],["中國",14],["台灣",6]]},{"region":"Japan Airspace","total":74,"noCallsign":2,"highAlt":7,"top":[["日本",49],["美國",8],["韓國",5]]},{"region":"Philippines","total":38,"noCallsign":2,"highAlt":1,"top":[["菲律賓",20],["中國",8],["日本",4]]},{"region":"Strait of Malacca","total":63,"noCallsign":4,"highAlt":2,"top":[["新加坡",24],["馬來西亞",15],["印尼",12]]},{"region":"Bay of Bengal","total":29,"noCallsign":1,"highAlt":1,"top":[["印度",15],["孟加拉",5],["泰國",3]]},{"region":"South Asia","total":91,"noCallsign":6,"highAlt":4,"top":[["印度",44],["巴基斯坦",12],["孟加拉",8]]},{"region":"Middle East","total":134,"noCallsign":5,"highAlt":4,"top":[["土耳其",30],["阿聯",24],["卡達",6]]}],"thermal":[{"region":"Taiwan","det":18,"night":4,"hc":2,"fires":[{"lat":23.5,"lon":121.0,"frp":12.1}]},{"region":"South China Sea","det":126,"night":22,"hc":8,"fires":[{"lat":14.1,"lon":114.0,"frp":33.4},{"lat":16.2,"lon":111.5,"frp":21.8}]},{"region":"East China Sea","det":35,"night":5,"hc":3,"fires":[{"lat":29.0,"lon":126.0,"frp":15.2}]},{"region":"Korean Peninsula","det":44,"night":7,"hc":2,"fires":[{"lat":37.0,"lon":127.0,"frp":10.5}]},{"region":"Japan","det":61,"night":9,"hc":4,"fires":[{"lat":37.4,"lon":141.0,"frp":18.6}]},{"region":"Philippines","det":98,"night":18,"hc":6,"fires":[{"lat":13.0,"lon":122.0,"frp":26.9}]},{"region":"Myanmar","det":27005,"night":5285,"hc":384,"fires":[{"lat":17.69662,"lon":97.04257,"frp":541.71},{"lat":18.07759,"lon":97.47091,"frp":493.31}]},{"region":"South Asia","det":19132,"night":3268,"hc":331,"fires":[{"lat":21.99852,"lon":92.34525,"frp":435.64},{"lat":18.44615,"lon":96.3231,"frp":404.83}]}],"tSignals":["HIGH INTENSITY FIRES in South China Sea: 8 detections >10MW FRP","ELEVATED NIGHT ACTIVITY in Myanmar: 5285 night detections","HIGH INTENSITY FIRES in South Asia: 12 detections >10MW FRP"],"chokepoints":[{"label":"台灣海峽","note":"半導體與東亞航運要道","lat":24,"lon":119},{"label":"南海","note":"東亞能源與貨櫃航線集中區","lat":14,"lon":114},{"label":"麻六甲海峽","note":"亞洲能源與貿易咽喉","lat":2.5,"lon":101.5},{"label":"東海","note":"日中韓台交會海域","lat":29,"lon":126},{"label":"孟加拉灣","note":"印度洋與東南亞連接區","lat":15,"lon":89}],"nuke":[{"site":"馬鞍山核電廠（台灣）","anom":false,"cpm":null,"n":0,"lat":21.96,"lon":120.75},{"site":"福島第一核電廠（日本）","anom":false,"cpm":null,"n":0,"lat":37.42,"lon":141.03},{"site":"柏崎刈羽核電廠（日本）","anom":false,"cpm":null,"n":0,"lat":37.43,"lon":138.6},{"site":"古里核電廠（韓國）","anom":false,"cpm":null,"n":0,"lat":35.32,"lon":129.3},{"site":"秦山核電廠（中國）","anom":false,"cpm":null,"n":0,"lat":30.44,"lon":120.94},{"site":"庫丹庫拉姆核電廠（印度）","anom":false,"cpm":null,"n":0,"lat":8.17,"lon":77.71}],"nukeSignals":["All monitored nuclear sites within normal radiation levels"],"airMeta":{"fallback":false,"liveTotal":1292,"timestamp":"2026-04-03T16:17:41.390Z","source":"OpenSky"},"sdr":{"total":892,"online":892,"zones":[{"region":"Middle East","count":3,"receivers":[{"name":"0-30 MHz SDR | Cyprus","lat":34.76,"lon":32.53},{"name":"0-30 MHz SDR | Doha, Qatar","lat":25.2854,"lon":51.531},{"name":"0-30 MHz SDR | Baghdad, IRAQ","lat":33.3355,"lon":44.387736}]},{"region":"Ukraine / Eastern Europe","count":5,"receivers":[{"name":"The Real VLF-HF SDR Receiver 8KHz-30MHz | 16m LongWire@8m Height | Ground | BleedResistor | Attentua","lat":44.53,"lon":26.23},{"name":"0-30 MHz -YO8SGV- KN37EX- KiwiSDR | Dorohoi, Romania","lat":47.96881,"lon":26.379005},{"name":"The Real VLF-HF SDR Receiver 8KHz-30MHz | 16m LongWire@8m Height | Ground | BleedResistor | Attentua","lat":44.53,"lon":26.23},{"name":"0-30 MHz SDR | SLANIC PH","lat":45.24,"lon":25.94},{"name":"The Real VLF-HF SDR Receiver 8KHz-30MHz | 16m LongWire@8m Height | Ground | BleedResistor | Attentua","lat":44.53,"lon":26.23}]},{"region":"Taiwan Strait","count":12,"receivers":[{"name":"0-30 MHz SDR ,BV3UN 桃園龜山 | Taoyuan, Taiwan","lat":25.005928,"lon":121.343095},{"name":"0-30 MHz SDR ,BV3UN 桃園龜山 | Taoyuan, Taiwan","lat":25.005928,"lon":121.343095},{"name":"0-30 MHz SDR, BM2KVV Taiwan #1","lat":25.106238,"lon":121.816775},{"name":"0-30 MHz SDR, BM2KVV Taiwan #2","lat":25.11,"lon":121},{"name":"0-30 MHz SDR, BM2KVV Taiwan #3","lat":25.106,"lon":121.82}]},{"region":"Baltic Region","count":0,"receivers":[]},{"region":"South China Sea","count":6,"receivers":[{"name":"0-30 MHz SDR, VR2BG | Hong Kong","lat":22.35,"lon":114.13},{"name":"0-30 MHz SDR,BV7AU  Pingtung taiwan","lat":22.79,"lon":120.58},{"name":"0-30 MHz SDR,Pingtung taiwan -3","lat":22.7943,"lon":120.5373},{"name":"0-30 MHz SDR,Pingtung taiwan-2(BV7AU) 屏東 臺灣","lat":22.791,"lon":120.581},{"name":"[Feline] 0-30MHz SDR | Waterfall Bay, Hong Kong","lat":22.25,"lon":114.135}]},{"region":"Korean Peninsula","count":8,"receivers":[{"name":"0-30 MHz KIWI SDR( 4ch ), HL5NTR, Daegu_City Republic of Korea. Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 8ch ), HL5NTR, Daegu_City Republic of Korea. 85M Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 8ch ), HL5NTR, Daegu_City Republic of Korea. 85M Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 8ch ), HL5NTR, Daegu_City Republic of Korea. 85M Loop-type Antenna.","lat":35.888778,"lon":128.574964},{"name":"0-30 MHz KIWI SDR( 4ch ), HL5NTR, Daegu_City Republic of Korea. Loop-type Antenna.","lat":35.888778,"lon":128.574964}]},{"region":"Iran","count":2,"receivers":[{"name":"0-30 MHz SDR | Doha, Qatar","lat":25.2854,"lon":51.531},{"name":"0-30 MHz SDR | Baghdad, IRAQ","lat":33.3355,"lon":44.387736}]},{"region":"Sahel / West Africa","count":0,"receivers":[]}]},"tg":{"posts":176,"urgent":[{"channel":"intelslava","text":"🇮🇷🇮🇱The strike of Iranian ballistic missiles on Petah Tikva precisely hit a drone production plant belonging to the Israeli company AeroSol.","views":33300,"date":"2026-04-03T10:13:58+00:00","urgentFlags":["missile","strike","drone"]},{"channel":"intelslava","text":"🇺🇸🇮🇷Trump announced new strikes on Iran. He confirmed that they attacked several bridges, and the next targets will be the energy sector.\n\nAll of this is in the event that Iran does not agree to a","views":33900,"date":"2026-04-03T10:14:47+00:00","urgentFlags":["confirmed","strike"]},{"channel":"intelslava","text":"🇺🇸🇮🇷The Iranians found the ejection seat of one of the ejected pilots of the American F-15E, but not the pilot himself.\n\nEither he has already been picked up by rescuers, or he is still hiding som","views":28100,"date":"2026-04-03T12:20:12+00:00","urgentFlags":["strike","advance"]},{"channel":"intelslava","text":"🇲🇬⚡️The authorities of Madagascar have prevented an attempt at a coup d'état and an assassination attempt on the president. Charges have been brought against 13 people, according to prosecutor Narin","views":28300,"date":"2026-04-03T12:05:57+00:00","urgentFlags":["coup","assassination"]},{"channel":"intelslava","text":"🇺🇸🇮🇷F-35 fighter jets and MQ-9 Reaper drones joined the operation to rescue the F-15E pilots who were shot down over Iran.","views":28000,"date":"2026-04-03T12:21:01+00:00","urgentFlags":["drone"]},{"channel":"intelslava","text":"🇮🇷🇦🇪Abu Dhabi suspended the operation of its largest gas processing complex \"after the fall of debris from an Iranian missile\" - Bloomberg.","views":27400,"date":"2026-04-03T12:03:54+00:00","urgentFlags":["missile"]},{"channel":"intelslava","text":"🇮🇷🇺🇸One \"Buk\" missile or its analogue could easily take out all three of them at once, not to mention more powerful air defense systems.\n\nHowever, it seems that the Americans are taking advantage ","views":24400,"date":"2026-04-03T13:33:34+00:00","urgentFlags":["missile"]},{"channel":"wartranslated","text":"Ukraine says air defenses have neutralized 26 missiles and 515 drones after a massive attack. In total, 579 aerial threats were recorded, including 10 Iskander-M ballistic missiles, 25 Kh-101 cruise m","views":890,"date":"2026-04-03T11:22:55+00:00","urgentFlags":["missile","drone"]},{"channel":"wartranslated","text":"Ukraine says air defenses have neutralized 26 missiles and 515 drones after a massive attack. In total, 579 aerial threats were recorded, including 10 Iskander-M ballistic missiles, 25 Kh-101 cruise m","views":741,"date":"2026-04-03T13:09:55+00:00","urgentFlags":["missile","drone"]},{"channel":"wartranslated","text":"RFI says Ukraine has bases in Libya to counter Russia, citing sources. It claims 200+ Ukrainian officers and experts are there with Tripoli’s approval and are training Libyan troops on drones. RFI als","views":668,"date":"2026-04-03T14:15:11+00:00","urgentFlags":["strike","drone"]},{"channel":"CIG_telegram","text":"🇺🇸⚔️🇮🇷 Additional footage shows a U.S. MQ‑9 Reaper drone and an A‑10C Thunderbolt II attack aircraft providing support for a likely C-SAR operation in Iran.\n\n🔗 Egypt's Intel Observer (@EGYOSINT)","views":8140.000000000001,"date":"2026-04-03T12:11:18+00:00","urgentFlags":["drone"]},{"channel":"CIG_telegram","text":"🇺🇸⚔️🇮🇷 An F-35 II Lightning fighter jet and an MQ-9 Reaper were spotted flying over Iran supporting ongoing search & rescue efforts.\n\nIranian channels reports a mass mobilization among not just th","views":7730,"date":"2026-04-03T11:52:28+00:00","urgentFlags":["mobilization"]},{"channel":"wartranslated","text":"Zelensky says no single country can lift the Strait of Hormuz blockade alone and only joint action can work. He points to Ukraine’s Black Sea grain corridor as a model and says Kyiv is ready to help w","views":662,"date":"2026-04-03T13:56:58+00:00","urgentFlags":["intercept","blockade"]},{"channel":"CIG_telegram","text":"—❗️🇺🇸/🇮🇷 BREAKING: Axios now confirms that an American F-15E fighter jet was shot down in Iran, and that rescue efforts are ‘ongoing’\n\n@Middle_East_Spectator","views":5950,"date":"2026-04-03T13:04:19+00:00","urgentFlags":["breaking"]},{"channel":"ukraine_frontline","text":"‼️🔥⚠️ Heavy artilery bombardment over Kharkov, Ukraine early morning 02.28.22.\nt.me/ukraine_frontline","views":2890,"date":"2022-02-28T10:03:27+00:00","urgentFlags":["bombardment"]}],"topPosts":[{"channel":"intelslava","text":"🇮🇷🇮🇱The strike of Iranian ballistic missiles on Petah Tikva precisely hit a drone production plant belonging to the Israeli company AeroSol.","views":33300,"date":"2026-04-03T10:13:58+00:00","urgentFlags":[]},{"channel":"intelslava","text":"🇺🇸🇮🇷Trump announced new strikes on Iran. He confirmed that they attacked several bridges, and the next targets will be the energy sector.\n\nAll of this is in the event that Iran does not agree to a","views":33900,"date":"2026-04-03T10:14:47+00:00","urgentFlags":[]}]},"who":[],"fred":[{"id":"DFF","label":"Fed Funds Rate","value":3.64,"date":"2026-04-01","recent":[3.64,3.64,3.64,3.64,3.64]},{"id":"DGS2","label":"2-Year Treasury Yield","value":3.81,"date":"2026-04-01","recent":[3.81,3.79,3.82,3.88,3.96]},{"id":"DGS10","label":"10-Year Treasury Yield","value":4.33,"date":"2026-04-01","recent":[4.33,4.3,4.35,4.44,4.42]},{"id":"DGS30","label":"30-Year Treasury Yield","value":4.91,"date":"2026-04-01","recent":[4.91,4.88,4.91,4.98,4.93]},{"id":"T10Y2Y","label":"10Y-2Y Spread (Yield Curve)","value":0.52,"date":"2026-04-02","recent":[0.52,0.52,0.51,0.53,0.56]},{"id":"T10Y3M","label":"10Y-3M Spread","value":0.61,"date":"2026-04-02","recent":[0.61,0.63,0.6,0.64,0.71]},{"id":"CPIAUCSL","label":"CPI All Items","value":327.46,"date":"2026-02-01","recent":[327.46,326.588]},{"id":"CPILFESL","label":"Core CPI (ex Food & Energy)","value":333.512,"date":"2026-02-01","recent":[333.512,332.793]},{"id":"PCEPI","label":"PCE Price Index","value":128.969,"date":"2026-01-01","recent":[128.969]},{"id":"MICH","label":"Michigan Inflation Expectations","value":3.4,"date":"2026-02-01","recent":[3.4,4]},{"id":"UNRATE","label":"Unemployment Rate","value":4.3,"date":"2026-03-01","recent":[4.3,4.4,4.3]},{"id":"PAYEMS","label":"Nonfarm Payrolls","value":158637,"date":"2026-03-01","recent":[158637,158459,158592]},{"id":"ICSA","label":"Initial Jobless Claims","value":202000,"date":"2026-03-28","recent":[202000,211000,205000,213000,214000]},{"id":"M2SL","label":"M2 Money Supply","value":22667.3,"date":"2026-02-01","recent":[22667.3,22469.1]},{"id":"WALCL","label":"Fed Balance Sheet Total Assets","value":6675344,"date":"2026-04-01","recent":[6675344,6657161,6655939,6646344,6628894]},{"id":"VIXCLS","label":"VIX (Fear Index)","value":24.54,"date":"2026-04-01","recent":[24.54,25.25,30.61,31.05,27.44]},{"id":"BAMLH0A0HYM2","label":"High Yield Spread (Credit Stress)","value":3.16,"date":"2026-04-01","recent":[3.16,3.28,3.46,3.42,3.21]},{"id":"DCOILWTICO","label":"WTI Crude Oil","value":104.69,"date":"2026-03-30","recent":[104.69,101.26,96.18,91.51,93.18]},{"id":"MORTGAGE30US","label":"30-Year Mortgage Rate","value":6.46,"date":"2026-04-02","recent":[6.46,6.38,6.22,6.11,6]},{"id":"DTWEXBGS","label":"USD Trade Weighted Index","value":120.8851,"date":"2026-03-27","recent":[120.8851,120.389,120.1282,120.1295,119.9371]}],"energy":{"wti":112.06,"brent":109.05,"natgas":2.81,"crudeStocks":461636,"wtiRecent":[102.88,101.38,100.12,111.54],"signals":["WTI crude above $100 at $104.69/bbl","Brent-WTI spread wide at $17.19 — supply/logistics divergence","Large crude inventory build: +5.5M barrels"]},"bls":[{"id":"CUUR0000SA0","label":"CPI-U All Items","value":326.785,"period":"2026-M02","date":"2026-02","momChange":1.533,"momChangePct":0.4713},{"id":"CUUR0000SA0L1E","label":"CPI-U Core (ex Food & Energy)","value":333.242,"period":"2026-M02","date":"2026-02","momChange":1.292,"momChangePct":0.3892},{"id":"LNS14000000","label":"Unemployment Rate","value":4.3,"period":"2026-M03","date":"2026-03","momChange":-0.1,"momChangePct":-2.2727},{"id":"CES0000000001","label":"Nonfarm Payrolls (thousands)","value":158637,"period":"2026-M03","date":"2026-03","momChange":178,"momChangePct":0.1123},{"id":"WPUFD49104","label":"PPI Final Demand","value":152.168,"period":"2026-M02","date":"2026-02","momChange":0.885,"momChangePct":0.585}],"treasury":{"totalDebt":"39016191534959.54","signals":["National debt at $39.02T"]},"gscpi":{"value":0.49,"date":"2026-02","interpretation":"above average"},"defense":[{"recipient":"LAWRENCE LIVERMORE NATIONAL SECURITY, LL","amount":40777168345.14,"desc":"TAS::89 0240::TAS THIS PERFORMANCE-BASED MANAGEMENT CONTRACT (PBMC) IS FOR THE M"},{"recipient":"FLUOR MARINE PROPULSION, LLC","amount":14773195999.25,"desc":"MANAGEMENT AND OPERATION OF THE NAVAL NUCLEAR LABORATORY AND NAVAL NUCLEAR PROPU"},{"recipient":"THE BOEING COMPANY","amount":10462406426,"desc":"PROVIDE DEVELOPMENTAL HARDWARE AND TEST ARTICLES, AND MANUFACTURE AND ASSEMBLE A"},{"recipient":"NORTHROP GRUMMAN SYSTEMS CORPORATION","amount":4420784857,"desc":"FIRST DDT AND E, ARES I-X, AND FLIGHT TESTS.  FIRST STAGE WILL BE A FIVE SEGMENT"},{"recipient":"THE BOEING COMPANY","amount":2382243189,"desc":"SPACE LAUNCH SYSTEM (SLS) STAGES PRODUCTION AND EVOLUTION CONTRACT (SPEC)"}],"noaa":{"totalAlerts":0,"alerts":[]},"epa":{"totalReadings":0,"stations":[]},"acled":{"totalEvents":0,"totalFatalities":0,"byRegion":{},"byType":{},"deadliestEvents":[]},"gdelt":{"totalArticles":0,"conflicts":0,"economy":0,"health":0,"crisis":0,"topTitles":[],"geoPoints":[]},"space":{"totalNewObjects":343,"militarySats":22,"militaryByCountry":{"UNK":22},"constellations":{"starlink":10119,"oneweb":651},"iss":{"name":"ISS (ZARYA)","noradId":25544,"inclination":51.6327,"epoch":"2026-04-03T02:25:58.213344"},"issPosition":{"lat":14.74,"lon":60.19,"name":"ISS (ZARYA)"},"stationPositions":[{"lat":14.74,"lon":60.19,"name":"ISS (ZARYA)"},{"lat":14.74,"lon":60.19,"name":"POISK"},{"lat":-39.63,"lon":-146.58,"name":"CSS (TIANHE)"},{"lat":14.74,"lon":60.19,"name":"ISS (NAUKA)"},{"lat":-12.04,"lon":88.33,"name":"FREGAT DEB"}],"recentLaunches":[{"name":"ELECTRON KICK STAGE R/B","epoch":"2026-04-03T10:37:35.976864"},{"name":"STARLINK-37058","epoch":"2026-04-03T07:46:56.298144"},{"name":"CZ-8A R/B","epoch":"2026-04-03T07:28:54.487200"},{"name":"STARLINK-36244","epoch":"2026-04-03T07:27:33.442272"},{"name":"2026-052A","epoch":"2026-04-03T07:26:12.242688"},{"name":"YUXING-3 06","epoch":"2026-04-03T07:23:30.781824"},{"name":"STARLINK-36241","epoch":"2026-04-03T07:21:57.610656"},{"name":"STARLINK-37127","epoch":"2026-04-03T07:21:36.080640"},{"name":"2026-052C","epoch":"2026-04-03T07:21:17.870976"},{"name":"2026-052D","epoch":"2026-04-03T07:18:05.770944"}],"launchByCountry":{"UNK":343},"signals":["HIGH LAUNCH TEMPO: 343 new objects tracked in last 30 days","STARLINK MEGA-CONSTELLATION: 10119 active satellites"]},"health":[{"n":"OpenSky","err":false,"stale":false},{"n":"FIRMS","err":false,"stale":false},{"n":"Maritime","err":false,"stale":false},{"n":"Safecast","err":false,"stale":false},{"n":"ACLED","err":true,"stale":false},{"n":"ReliefWeb","err":false,"stale":false},{"n":"WHO","err":false,"stale":false},{"n":"OFAC","err":false,"stale":false},{"n":"OpenSanctions","err":false,"stale":false},{"n":"ADS-B","err":false,"stale":false},{"n":"FRED","err":false,"stale":false},{"n":"Treasury","err":false,"stale":false},{"n":"BLS","err":false,"stale":false},{"n":"EIA","err":false,"stale":false},{"n":"GSCPI","err":false,"stale":false},{"n":"USAspending","err":false,"stale":false},{"n":"Comtrade","err":false,"stale":false},{"n":"NOAA","err":false,"stale":false},{"n":"EPA","err":false,"stale":false},{"n":"Patents","err":false,"stale":false},{"n":"Bluesky","err":false,"stale":false},{"n":"Reddit","err":false,"stale":false},{"n":"Telegram","err":false,"stale":false},{"n":"KiwiSDR","err":false,"stale":false},{"n":"Space","err":false,"stale":false},{"n":"YFinance","err":false,"stale":false},{"n":"CISA-KEV","err":false,"stale":false},{"n":"Cloudflare-Radar","err":false,"stale":false}],"news":[{"title":"亞洲新聞來源已設定：中央社 CNA 國際、兩岸、財經 RSS","source":"CNA Taiwan","date":"2026-04-03T16:18:10.188Z","region":"Taiwan","lat":25.033,"lon":121.565},{"title":"亞洲新聞來源已設定：CNA Singapore Asia、Business、World RSS","source":"CNA Singapore","date":"2026-04-03T16:18:10.188Z","region":"Singapore","lat":1.352,"lon":103.82},{"title":"亞洲新聞來源已設定：Nikkei Asia RSS","source":"Nikkei Asia","date":"2026-04-03T16:18:10.188Z","region":"Japan","lat":35.681,"lon":139.767},{"title":"亞洲新聞來源已設定：Indian Express 與 The Hindu RSS","source":"Indian Express","date":"2026-04-03T16:18:10.188Z","region":"India","lat":28.6139,"lon":77.209},{"title":"亞洲新聞來源已設定：Bangkok Post Thailand 與 World RSS","source":"Bangkok Post","date":"2026-04-03T16:18:10.188Z","region":"Thailand","lat":13.756,"lon":100.501}],"markets":{"indexes":[{"symbol":"^N225","name":"日經 225","price":40200,"changePct":0.0},{"symbol":"^HSI","name":"恆生指數","price":18500,"changePct":0.0},{"symbol":"^TWII","name":"台灣加權","price":20500,"changePct":0.0},{"symbol":"^KS11","name":"韓國 KOSPI","price":2700,"changePct":0.0}],"rates":[{"symbol":"JPY=X","name":"美元/日圓","price":150.0,"changePct":0.0},{"symbol":"CNH=X","name":"美元/離岸人民幣","price":7.2,"changePct":0.0}],"commodities":[{"symbol":"GC=F","name":"Gold","price":4702.7,"change":176.7,"changePct":3.9,"history":[{"date":"2026-03-30","close":4526},{"date":"2026-03-31","close":4647.6},{"date":"2026-04-01","close":4783.2},{"date":"2026-04-02","close":4651.5}]},{"symbol":"SI=F","name":"Silver","price":73.17,"change":2.85,"changePct":4.05,"history":[{"date":"2026-03-30","close":70.32},{"date":"2026-03-31","close":74.69},{"date":"2026-04-01","close":75.87},{"date":"2026-04-02","close":72.74}]},{"symbol":"CL=F","name":"WTI Crude","price":112.06,"change":9.18,"changePct":8.92,"history":[{"date":"2026-03-30","close":102.88},{"date":"2026-03-31","close":101.38},{"date":"2026-04-01","close":100.12},{"date":"2026-04-02","close":111.54}]},{"symbol":"BZ=F","name":"Brent Crude","price":109.05,"change":-3.73,"changePct":-3.31,"history":[{"date":"2026-03-30","close":112.78},{"date":"2026-03-31","close":118.35},{"date":"2026-04-01","close":101.16},{"date":"2026-04-02","close":109.03}]},{"symbol":"NG=F","name":"Natural Gas","price":2.81,"change":-0.08,"changePct":-2.77,"history":[{"date":"2026-03-30","close":2.89},{"date":"2026-03-31","close":2.88},{"date":"2026-04-01","close":2.82},{"date":"2026-04-02","close":2.8}]}],"crypto":[{"symbol":"BTC-USD","name":"Bitcoin","price":66895.18,"change":203.73,"changePct":0.31},{"symbol":"ETH-USD","name":"Ethereum","price":2052.04,"change":28.52,"changePct":1.41}],"vix":{"value":23.87,"change":-6.74,"changePct":-22.02},"timestamp":"2026-04-03T16:17:41.213Z"},"ideas":[],"ideasSource":"removed","newsFeed":[{"headline":"亞洲新聞來源已設定：中央社 CNA 國際、兩岸、財經 RSS","source":"CNA Taiwan","type":"rss","timestamp":"2026-04-03T16:18:10.188Z","region":"Taiwan","urgent":false,"url":null},{"headline":"亞洲新聞來源已設定：CNA Singapore Asia、Business、World RSS","source":"CNA Singapore","type":"rss","timestamp":"2026-04-03T16:18:10.188Z","region":"Singapore","urgent":false,"url":null},{"headline":"亞洲新聞來源已設定：Nikkei Asia RSS","source":"Nikkei Asia","type":"rss","timestamp":"2026-04-03T16:18:10.188Z","region":"Japan","urgent":false,"url":null},{"headline":"亞洲新聞來源已設定：Indian Express 與 The Hindu RSS","source":"Indian Express","type":"rss","timestamp":"2026-04-03T16:18:10.188Z","region":"India","urgent":false,"url":null},{"headline":"亞洲新聞來源已設定：Bangkok Post Thailand 與 World RSS","source":"Bangkok Post","type":"rss","timestamp":"2026-04-03T16:18:10.188Z","region":"Thailand","urgent":false,"url":null}]};
 // === I18N ===
-const L = window.__CRUCIX_LOCALE__ || {};
+const DEFAULT_LOCALE = {"meta":{"code":"zh","name":"Traditional Chinese","nativeName":"繁體中文"},"dashboard":{"title":"CRUCIX — 情資終端","bootTitle":"CRUCIX 情資引擎","bootSubtitle":"本地情資平台 · 31 個來源","waitingForSweep":"等待首次掃描…","sourcesOk":"來源正常","lastSweep":"上次掃描","nextSweep":"下次掃描","sweep":"掃描","sources":"來源","delta":"變化","highAlert":"高度警戒","riskOff":"避險","riskOn":"風險偏好","mixed":"混合","terminalActive":"終端啟動","perf":"效能","perfLow":"低","perfHigh":"高","guideBtn":"訊號說明","visuals":"視覺","visualsLite":"精簡","visualsFull":"完整"},"boot":{"initializing":"正在初始化 CRUCIX 引擎 v2.1.0","connecting":"連線 {count} 個 OSINT 來源…","sourceGroup1":"OPENSKY · FIRMS · KIWISDR · 海事","sourceGroup2":"FRED · BLS · EIA · TREASURY · GSCPI","sourceGroup3":"TELEGRAM · SAFECAST · EPA · WHO · OFAC","sourceGroup4":"GDELT · NOAA · PATENTS · BLUESKY · REDDIT","sourceGroup5":"USGS · ECB · CVE · COPERNICUS · CELESTRAK","sweepComplete":"掃描完成 — {ok}/{total} 來源","ok":"正常","acledLayer":"ACLED 衝突圖層","events":"事件","degraded":"降級","flightCorridors":"飛航走廊","active":"啟用","dualProjection":"雙投影","ready":"就緒","intelligenceSynthesis":"情資綜整"},"panels":{"sensorGrid":"感測網格","tradeIdeas":"可操作觀察","osintFeed":"OSINT 動態","osintStream":"OSINT 串流","nuclearWatch":"亞洲核電監測","newsTicker":"亞洲即時新聞","sweepDelta":"掃描變化","macroMarkets":"宏觀與市場","healthAlerts":"健康警示","riskGauges":"風險儀表","crossSourceSignals":"跨來源訊號","signalCore":"訊號核心","seismicWatch":"地震監測","cyberWatch":"資安監測","spaceWatch":"太空監測","europeAlerts":"歐洲警示","ecbIndicators":"ECB 指標"},"layers":{"airActivity":"空域活動","thermalSpikes":"熱點異常","sdrCoverage":"SDR 覆蓋","maritimeWatch":"海事監測","nuclearSites":"核電廠","conflictEvents":"衝突事件","healthWatch":"健康監測","worldNews":"亞洲新聞","osintFeed":"OSINT 動態","theaters":"戰區","nightDet":"夜間偵測","online":"上線","chokepoints":"咽喉點","monitors":"監測點","fatalities":"死亡","whoAlerts":"WHO 警示","rssGeolocated":"RSS 定位","earthquakes":"地震","seismicEvents":"地震事件","cyberVulns":"資安漏洞","spaceActivity":"太空活動","europeEmergency":"歐洲緊急"},"map":{"worldNews":"亞洲新聞","healthAlert":"健康警示","chokepoint":"咽喉點","nuclearSite":"核電廠","osintEvent":"OSINT 事件","thermalDetection":"熱點偵測","aircraft":"航機","rssGeolocated":"RSS 定位","airTraffic":"空域流量","thermalFire":"熱點/火點","conflict":"衝突","sdrReceiver":"SDR 接收器","scrollToZoom":"滾動縮放 · 拖曳平移","globeMode":"地球模式","flatMode":"平面模式","earthquake":"地震","disaster":"災害","weatherAlert":"天氣警示","epaRadNet":"EPA 輻射網","spaceStation":"太空站","gdeltEvent":"GDELT 事件"},"regions":{"world":"亞洲重心","americas":"美洲","europe":"歐洲","middleEast":"中東","asiaPacific":"亞太","africa":"非洲"},"badges":{"radiation":"輻射","live":"即時","delayed":"延遲","items":"項","urgent":"緊急","worldview":"全局","hotMetrics":"熱點指標","stress":"壓力","sweeping":"掃描中…","europe":"歐洲","orbital":"軌道"},"delta":{"baseline":"基準","escalation":"升高","deescalation":"降溫","stable":"穩定","newSignals":"新訊號","resolved":"已解除","noChanges":"與上次掃描相比無變化","changes":"變化","critical":"關鍵","new":"新增"},"ideas":{"confidence":"信心","horizon":"期間","risk":"風險","signals":"訊號","rationale":"理由","aiEnhanced":"AI 增強","llmOff":"LLM 關閉","pending":"等待中","llmNotConfigured":"尚未設定 LLM","llmHelp":"設定 LLM_PROVIDER 與憑證以啟用 AI 交易觀察","disclosure":"僅供資訊參考，非投資建議、買賣建議或任何形式招攬。所有觀察來自公開 OSINT 資料，不應作為投資決策唯一依據。投資前請諮詢合格財務顧問。過往表現不保證未來結果。"},"metrics":{"wtiCrude":"WTI 原油","brent":"布蘭特","natGas":"天然氣","vix":"VIX","fedFunds":"聯邦基金","gscpi":"GSCPI","cpiMom":"CPI 月變","unemployment":"失業率","hySpread":"高收益利差","usdIndex":"美元指數","joblessClaims":"初領失業金","mortgage30y":"30 年房貸","m2Supply":"M2 貨幣","natDebt":"國債","wti5day":"WTI 5 日","indexes":"指數","crypto":"加密貨幣","energyMacro":"能源 + 宏觀","vsPrior":"較前值","ecbRate":"ECB 利率","eurusd":"歐元/美元","euM3":"歐洲 M3","euHicp":"歐洲 HICP","earthquakes7d":"地震（7日）","criticalCves":"重大 CVE","spaceObjects":"太空物件","starlink":"星鏈","europeAlerts":"歐洲警示"},"signalMetrics":{"incidentTempo":"事件節奏","airTheaters":"空域戰區","thermalSpikes":"熱點異常","sdrNodes":"SDR 節點","chokepoints":"咽喉點","whoAlerts":"WHO 警示"},"nuclear":{"allSitesNormal":"所有核電廠正常","anomalyDetected":"偵測到異常","noData":"無資料"},"time":{"justNow":"剛剛","hoursAgo":"{hours} 小時前","daysAgo":"{days} 天前"},"bot":{"commands":{"status":"取得系統健康、上次掃描時間與來源狀態","sweep":"手動觸發掃描","brief":"取得簡短情資摘要","portfolio":"顯示投資組合狀態（若已連接）","alerts":"顯示近期警示","mute":"暫停警示","unmute":"恢復警示","help":"顯示可用指令"},"messages":{"noDataYet":"⏳ 尚無資料 — 等待首次掃描完成。"}},"alerts":{"confidence":{"high":"高","medium":"中","low":"低"},"fields":{"direction":"方向","confidence":"信心","crossCorrelation":"交叉關聯","action":"行動","signals":"訊號","monitor":"監控"}},"llm":{"systemPrompt":"你是一位宏觀情資分析師。請根據結構化 OSINT 與經濟資料，輸出精簡、可追溯且具風險意識的觀察。"}};
+const L = window.__CRUCIX_LOCALE__ || DEFAULT_LOCALE;
 function t(keyPath, fallback) {
   const keys = keyPath.split('.');
   let value = L;
@@ -394,130 +399,91 @@ let globeInitialized = false;
 let flightsVisible = true;
 let lowPerfMode = localStorage.getItem('crucix_low_perf') === 'true';
 let isFlat = shouldStartFlat();
-let currentRegion = 'world';
+let currentRegion = 'asiaPacific';
 let flatSvg, flatProjection, flatPath, flatG, flatZoom, flatW, flatH;
 const signalGuideItems = [
-  {
-    term:'No Callsign',
-    category:'Air',
-    meaning:'OpenSky received an aircraft track without a usable callsign or flight ID in that record.',
-    matters:'Useful as an opacity signal. A cluster of missing callsigns can indicate incomplete transponder metadata or less transparent traffic.',
-    notMeaning:'Not proof of military, covert, or hostile activity on its own.',
-    example:'South China Sea: No Callsign 6 of 152 means 6 tracks in that theater had no usable callsign in the feed.'
-  },
-  {
-    term:'High Altitude',
-    category:'Air',
-    meaning:'Aircraft above 12,000 meters, roughly 39,000 feet, in the current OpenSky snapshot.',
-    matters:'Separates cruise-level traffic from lower-altitude local or regional movement.',
-    notMeaning:'Not a danger score and not inherently unusual. Commercial jets commonly operate here.',
-    example:'High Altitude 2 means only 2 tracked aircraft in that hotspot were above the cruise threshold at that snapshot.'
-  },
-  {
-    term:'Top Countries',
-    category:'Air',
-    meaning:'The most common OpenSky origin_country values among aircraft in that hotspot.',
-    matters:'Useful for understanding the rough composition of traffic flowing through a theater.',
-    notMeaning:'Not who is controlling the aircraft right now and not a direct indicator of military ownership.',
-    example:'China (61), Philippines (39), Taiwan (17) means those were the top registered origin countries in the snapshot.'
-  },
-  {
-    term:'FRP',
-    category:'Thermal',
-    meaning:'Fire Radiative Power. This is the intensity of one specific FIRMS hotspot, measured in megawatts.',
-    matters:'Higher FRP usually means a hotter, larger, or more energetic fire event at that exact point.',
-    notMeaning:'Not the intensity of the whole region and not automatic proof of conflict activity.',
-    example:'Sudan / Horn of Africa: FRP 92.3 MW describes that one hotspot, while Total 1,451 describes the entire regional detection count.'
-  },
-  {
-    term:'Total Detections',
-    category:'Thermal',
-    meaning:'The total number of FIRMS thermal detections in the entire region bucket for the current sweep.',
-    matters:'Useful for spotting unusually active fire clusters, especially when compared with historical baselines or night activity.',
-    notMeaning:'Not a count for the single map point you clicked and not necessarily a conflict count.',
-    example:'Total 1,451 means the whole Sudan / Horn of Africa bucket had 1,451 detections in that sweep.'
-  },
-  {
-    term:'Night Detections',
-    category:'Thermal',
-    meaning:'Thermal detections tagged as occurring at night inside the broader FIRMS region bucket.',
-    matters:'Nighttime heat can be more noteworthy because it is less likely to be routine daytime land burning.',
-    notMeaning:'Not a direct combat indicator. It still needs context from location, baseline, and corroborating sources.',
-    example:'Night 140 means 140 of the 1,451 regional detections were nighttime detections in that sweep.'
-  },
-  {
-    term:'Chokepoint',
-    category:'Maritime',
-    meaning:'A strategic maritime corridor or passage where trade and energy flows can be delayed, diverted, or disrupted.',
-    matters:'These nodes matter because a disruption here can affect shipping costs, transit times, and commodity pricing globally.',
-    notMeaning:'Not proof that disruption is happening now. It is a strategic watch location.',
-    example:'Bab el-Mandeb or the Strait of Hormuz matter because shipping and energy flows concentrate there.'
-  },
-  {
-    term:'SDR Receiver',
-    category:'Signals',
-    meaning:'A publicly reachable software-defined radio receiver in or near a region of interest.',
-    matters:'Dense receiver coverage can give you more ability to monitor communications or signal activity in a theater.',
-    notMeaning:'Not evidence of hostile emissions or a threat by itself. It is an observation and monitoring layer.',
-    example:'South China Sea SDR count means publicly accessible KiwiSDR receivers are available in or near that zone.'
-  },
-  {
-    term:'CPM',
-    category:'Radiation',
-    meaning:'Counts per minute from a radiation monitoring source, used here for relative radiation status at a site.',
-    matters:'Useful for spotting anomalies against the site’s normal range or comparing consecutive readings.',
-    notMeaning:'Not a direct safety verdict on its own. Interpretation depends on local baseline and trend, not the raw number alone.',
-    example:'A site reading 33 CPM can be normal if that location’s usual background level is in the same range.'
-  },
-  {
-    term:'HY Spread',
-    category:'Macro',
-    meaning:'High-yield credit spread, shown here as a stress proxy from FRED credit data.',
-    matters:'When spreads widen, markets are usually pricing more credit stress and tighter financial conditions.',
-    notMeaning:'Not a recession call by itself. It is one stress signal among many.',
-    example:'A rising HY Spread alongside higher VIX and weaker equities is a stronger risk-off pattern than HY alone.'
-  },
-  {
-    term:'VIX',
-    category:'Macro',
-    meaning:'The CBOE Volatility Index, commonly used as a market-implied fear or volatility gauge.',
-    matters:'Higher VIX often means more expected equity volatility and more defensive market positioning.',
-    notMeaning:'Not a direct forecast of a crash and not a geopolitical indicator by itself.',
-    example:'VIX above 20 with widening HY spreads is a stronger stress pattern than VIX alone.'
-  },
-  {
-    term:'GSCPI',
-    category:'Macro',
-    meaning:'The Global Supply Chain Pressure Index, a broad indicator of global supply-chain strain.',
-    matters:'It helps translate geopolitical or weather disruptions into likely pressure on shipping, inventory, and pricing.',
-    notMeaning:'Not a live market price and not a company-specific supply-chain score by itself.',
-    example:'A higher GSCPI makes route or energy shocks more likely to spill into broader cost pressure.'
-  },
-  {
-    term:'WHO Alert',
-    category:'Health',
-    meaning:'A WHO Disease Outbreak News item or outbreak-related bulletin surfaced in the health layer.',
-    matters:'Useful for watching outbreaks that could affect travel, supply chains, humanitarian stress, or regional operating conditions.',
-    notMeaning:'Not a pandemic declaration and not automatically high severity.',
-    example:'A WHO alert in a port-heavy region matters more if it overlaps shipping, border controls, or local instability signals.'
-  },
-  {
-    term:'Sweep Delta',
-    category:'Platform',
-    meaning:'The change summary between the current sweep and the previous one, including new, escalated, and de-escalated signals.',
-    matters:'Useful for spotting what changed recently instead of re-reading the full dashboard from scratch.',
-    notMeaning:'Not a full risk model. It is a directional change layer on top of the raw signals.',
-    example:'A delta marked risk-off with several new and escalated items means the latest sweep materially worsened the signal mix.'
-  }
+  {term:'無呼號',category:'空域',meaning:'OpenSky 航跡缺少可用呼號或航班 ID。',matters:'在台海、南海或朝鮮半島出現群聚時，可作為透明度下降的提示。',notMeaning:'不能單獨證明軍事、隱密或敵意行動。',example:'南海無呼號 6 架，代表該批航跡中有 6 筆缺少呼號。'},
+  {term:'高空航跡',category:'空域',meaning:'目前快照中高度超過約 12,000 公尺的航機。',matters:'可區分巡航空層與區域性低空活動。',notMeaning:'不是危險分數，商用航機也常在此高度。',example:'高空 2 架表示該亞洲熱區中只有 2 架超過門檻。'},
+  {term:'熱輻射功率',category:'熱點',meaning:'FIRMS 單一熱點的能量強度。',matters:'較高數值代表該點火勢或熱源較強，需與夜間偵測一起看。',notMeaning:'不是整個區域強度，也不是衝突證明。',example:'台灣或南海周邊若出現高強度熱點，需再看位置與來源。'},
+  {term:'海上咽喉',category:'海事',meaning:'麻六甲、台海、南海等貿易與能源路線集中處。',matters:'擾動可能影響航運成本、交期、能源與半導體供應鏈。',notMeaning:'不是目前已發生封鎖或中斷的證明。',example:'麻六甲與台海同時升溫時，亞洲航運風險需上調。'},
+  {term:'核電 CPM',category:'核電',meaning:'核電廠附近輻射監測的每分鐘計數，用於相對狀態觀察。',matters:'適合追蹤福島、馬鞍山、古里等站點的異常變化。',notMeaning:'不能單獨作為安全判定，需看基準值與官方資料。',example:'某站 33 CPM 可能屬正常背景值，重點是趨勢變化。'},
+  {term:'亞洲掃描變化',category:'平台',meaning:'本次亞洲掃描相對前次的新增、升高與降溫摘要。',matters:'讓你快速知道亞洲態勢哪裡變了，不必重新讀完整面板。',notMeaning:'不是完整風險模型，仍需跨來源驗證。',example:'空域與熱點同時升高，代表需要提高關注。'}
 ];
 const regionPOV = {
-  world: { lat: 20, lng: 20, altitude: 1.8 },
-  americas: { lat: 35, lng: -95, altitude: 1.0 },
-  europe: { lat: 50, lng: 15, altitude: 1.0 },
+  world: { lat: 24, lng: 112, altitude: 1.35 },
+  asiaPacific: { lat: 24, lng: 118, altitude: 0.95 },
   middleEast: { lat: 28, lng: 45, altitude: 1.1 },
-  asiaPacific: { lat: 25, lng: 110, altitude: 1.2 },
+  europe: { lat: 50, lng: 15, altitude: 1.0 },
+  americas: { lat: 35, lng: -95, altitude: 1.0 },
   africa: { lat: 5, lng: 20, altitude: 1.2 }
 };
+
+const regionCoords = {
+  'Taiwan Strait': { lat: 24, lon: 120 },
+  'South China Sea': { lat: 14, lon: 114 },
+  'Korean Peninsula': { lat: 37, lon: 127 },
+  'East China Sea': { lat: 29, lon: 126 },
+  'Japan Airspace': { lat: 37, lon: 138 },
+  'Japan': { lat: 37, lon: 138 },
+  'Philippines': { lat: 13, lon: 122 },
+  'Strait of Malacca': { lat: 3, lon: 101 },
+  'Bay of Bengal': { lat: 15, lon: 89 },
+  'South Asia': { lat: 22, lon: 78 },
+  'Middle East': { lat: 30, lon: 44 },
+  'Taiwan': { lat: 23.5, lon: 121 },
+  'Myanmar': { lat: 20, lon: 96 },
+};
+function coordsForRegion(region, fallback = { lat: 24, lon: 120 }) {
+  return regionCoords[region] || regionCoords[String(region || '').replace(' Region', '')] || fallback;
+}
+function coordsForNuclearSite(site, fallback) {
+  if (typeof site?.lat === 'number' && typeof site?.lon === 'number') return { lat: site.lat, lon: site.lon };
+  return fallback;
+}
+
+const zhSourceNames = {
+  'CNA Taiwan':'中央社', 'CNA Singapore':'亞洲新聞台', 'Nikkei Asia':'日經亞洲',
+  'Indian Express':'印度快報', 'The Hindu':'印度教報', 'Bangkok Post':'曼谷郵報',
+  'GDELT':'全球事件資料庫', 'TELEGRAM':'即時通訊', 'WHO ALERT':'世界衛生組織'
+};
+const zhMarketNames = {
+  '^N225':'日經 225', '^HSI':'恆生指數', '000001.SS':'上證綜合', '^TWII':'台灣加權',
+  '^KS11':'韓國 KOSPI', '^NSEI':'印度 NIFTY 50', '^STI':'新加坡海峽時報',
+  'JPY=X':'美元/日圓', 'CNH=X':'美元/離岸人民幣', 'SGD=X':'美元/新加坡幣',
+  'BTC-USD':'比特幣', 'ETH-USD':'以太幣', 'GC=F':'黃金', 'SI=F':'白銀', 'CL=F':'WTI 原油', 'BZ=F':'布蘭特原油', 'NG=F':'天然氣', '^VIX':'VIX 波動率'
+};
+const zhCountryNames = {
+  US:'美國', USA:'美國', China:'中國', Japan:'日本', Taiwan:'台灣', India:'印度',
+  'South Korea':'韓國', Korea:'韓國', Singapore:'新加坡', Thailand:'泰國', Philippines:'菲律賓',
+  Vietnam:'越南', Malaysia:'馬來西亞', Indonesia:'印尼', Russia:'俄羅斯'
+};
+function zhSource(source){ return zhSourceNames[source] || source || '亞洲來源'; }
+function zhMarketName(q){ return zhMarketNames[q?.symbol] || q?.name || q?.symbol || '亞洲市場'; }
+function zhCountry(country){ return zhCountryNames[country] || country || '其他'; }
+function zhRegion(region){ return regionCoords[region] ? region : (region || '亞洲'); }
+function zhNewsHeadline(item){
+  const text = String(item?.headline || item?.title || '');
+  if(/[\u4e00-\u9fff]/.test(text)) return cleanText(text);
+  return `亞洲新聞更新：${zhSource(item?.source)}（${item?.region || '亞洲'}）`;
+}
+function zhSignalText(text){
+  const s = String(text || '');
+  let region = Object.keys(regionCoords).find(r => s.includes(r)) || '亞洲';
+  if(s.includes('HIGH INTENSITY FIRES')) return `${zhRegion(region)} 出現高強度熱點，需留意基礎設施、邊境與交通影響。`;
+  if(s.includes('ELEVATED NIGHT ACTIVITY')) return `${zhRegion(region)} 夜間熱點活動升高，列入亞洲態勢觀察。`;
+  if(s.includes('RADIATION')) return `亞洲核電監測出現輻射讀值變化，請交叉比對 Safecast 與官方資料。`;
+  return `亞洲跨來源訊號：${zhRegion(region)} 需要持續追蹤。`;
+}
+function buildAsiaSignals(){
+  const rows = [];
+  const hotThermal = [...(D.thermal||[])].sort((a,b)=>(b.hc||0)-(a.hc||0)).slice(0,3);
+  hotThermal.forEach(ti => rows.push(`${ti.region} 熱點 ${Number(ti.det||0).toLocaleString()} 筆，其中夜間 ${Number(ti.night||0).toLocaleString()} 筆。`));
+  const air = [...(D.air||[])].sort((a,b)=>(b.total||0)-(a.total||0)).slice(0,2);
+  air.forEach(a => rows.push(`${a.region} 目前追蹤 ${a.total||0} 架航機，無呼號 ${a.noCallsign||0} 架。`));
+  rows.push(`亞洲核電監測涵蓋 ${D.nuke?.length||0} 座核電廠，異常 ${D.nuke?.filter(n=>n.anom).length||0} 件。`);
+  rows.push(`亞洲新聞與資料串流目前有 ${(D.newsFeed||[]).length} 筆可用項目。`);
+  return rows.slice(0,6);
+}
 
 if(lowPerfMode) document.body.classList.add('low-perf');
 
@@ -533,7 +499,7 @@ function shouldStartFlat(){
   return lowPerfMode || isWeakMobileDevice();
 }
 
-function setMapLoading(show, text='Initializing 3D Globe'){
+function setMapLoading(show, text='初始化 3D 地球'){
   const overlay = document.getElementById('mapLoading');
   const label = document.getElementById('mapLoadingText');
   if(!overlay || !label) return;
@@ -546,7 +512,7 @@ function togglePerfMode(){
   localStorage.setItem('crucix_low_perf', String(lowPerfMode));
   document.body.classList.toggle('low-perf', lowPerfMode);
   const perfStatus = document.getElementById('perfStatus');
-  if(perfStatus) perfStatus.textContent = lowPerfMode ? 'LITE' : 'FULL';
+  if(perfStatus) perfStatus.textContent = lowPerfMode ? '精簡' : '完整';
   if(globe){
     globe.controls().autoRotate = !lowPerfMode;
     globe.arcDashAnimateTime(lowPerfMode ? 0 : 2000);
@@ -561,8 +527,8 @@ function togglePerfMode(){
 
 // === TOPBAR ===
 function getRegionControlsMarkup(){
-  return ['world','americas','europe','middleEast','asiaPacific','africa'].map(r=>
-    `<button class="region-btn ${r===currentRegion?'active':''}" data-region="${r}" onclick="setRegion('${r}')">${r==='middleEast'?'MIDDLE EAST':r==='asiaPacific'?'ASIA PACIFIC':r.toUpperCase()}</button>`
+  return ['asiaPacific','middleEast','europe','americas','africa','world'].map(r=>
+    `<button class="region-btn ${r===currentRegion?'active':''}" data-region="${r}" onclick="setRegion('${r}')">${t('regions.'+r, r==='middleEast'?'MIDDLE EAST':r==='asiaPacific'?'ASIA PACIFIC':r.toUpperCase())}</button>`
   ).join('');
 }
 
@@ -581,22 +547,22 @@ function renderRegionControls(){
 function renderTopbar(){
   const mobile = isMobileLayout();
   const ts = new Date(D.meta.timestamp);
-  const d = ts.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase();
-  const timeStr = ts.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const d = ts.toLocaleDateString('zh-TW',{year:'numeric',month:'short',day:'numeric'});
+  const timeStr = ts.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false});
   document.getElementById('topbar').innerHTML=`
     <div class="top-left">
-      <span class="brand">CRUCIX MONITOR</span>
-      <span class="regime-chip"><span class="blink"></span>WARTIME STAGFLATION RISK</span>
+      <span class="brand">CRUCIX 亞洲監測</span>
+      <span class="regime-chip"><span class="blink"></span>亞洲複合風險監測</span>
     </div>
     ${mobile ? `<div class="top-center">${getRegionControlsMarkup()}</div>` : ''}
     <div class="top-right">
-      <button class="meta-pill perf-pill" onclick="togglePerfMode()" title="Reduce visual effects and start mobile in flat mode">${t('dashboard.visuals','VISUALS')} <span class="v" id="perfStatus">${lowPerfMode?t('dashboard.visualsLite','LITE'):t('dashboard.visualsFull','FULL')}</span></button>
+      <button class="meta-pill perf-pill" onclick="togglePerfMode()" title="降低視覺效果，行動裝置優先使用平面模式">${t('dashboard.visuals','VISUALS')} <span class="v" id="perfStatus">${lowPerfMode?t('dashboard.visualsLite','精簡'):t('dashboard.visualsFull','完整')}</span></button>
       <span class="meta-pill">${t('dashboard.sweep','SWEEP')} <span class="v">${(D.meta.totalDurationMs/1000).toFixed(1)}s</span></span>
       <span class="meta-pill">${d} <span class="v">${timeStr}</span></span>
       <span class="meta-pill">${t('dashboard.sources','SOURCES')} <span class="v">${D.meta.sourcesOk}/${D.meta.sourcesQueried}</span></span>
-      ${D.delta?.summary ? `<span class="meta-pill">${t('dashboard.delta','DELTA')} <span class="v">${D.delta.summary.direction==='risk-off'?'&#x25B2; '+t('dashboard.riskOff','RISK-OFF'):D.delta.summary.direction==='risk-on'?'&#x25BC; '+t('dashboard.riskOn','RISK-ON'):'&#x25C6; '+t('dashboard.mixed','MIXED')}</span></span>` : ''}
+      ${D.delta?.summary ? `<span class="meta-pill">${t('dashboard.delta','DELTA')} <span class="v">${D.delta.summary.direction==='risk-off'?'&#x25B2; '+t('dashboard.riskOff','避險'):D.delta.summary.direction==='risk-on'?'&#x25BC; '+t('dashboard.riskOn','風險偏好'):'&#x25C6; '+t('dashboard.mixed','混合')}</span></span>` : ''}
       <button class="guide-btn" onclick="openGlossary()">${t('dashboard.guideBtn','What Signals Mean')}</button>
-      <span class="alert-badge">${t('dashboard.highAlert','HIGH ALERT')}</span>
+      <span class="alert-badge">${t('dashboard.highAlert','高度警戒')}</span>
     </div>`;
   renderRegionControls();
 }
@@ -610,19 +576,19 @@ function renderLeftRail(){
   const conflictEvents = D.acled?.totalEvents || 0;
   const conflictFatal = D.acled?.totalFatalities || 0;
   const layers=[
-    {name:t('layers.airActivity','Air Activity'),count:totalAir,dot:'air',sub:`${D.air.length} ${t('layers.theaters','theaters')}`},
-    {name:t('layers.thermalSpikes','Thermal Spikes'),count:totalThermal.toLocaleString(),dot:'thermal',sub:`${totalNight.toLocaleString()} ${t('layers.nightDet','night det.')}`},
-    {name:t('layers.sdrCoverage','SDR Coverage'),count:D.sdr.total,dot:'sdr',sub:`${D.sdr.online} ${t('layers.online','online')}`},
+    {name:t('layers.airActivity','空域活動'),count:totalAir,dot:'air',sub:`${D.air.length} ${t('layers.theaters','戰區')}`},
+    {name:t('layers.thermalSpikes','Thermal Spikes'),count:totalThermal.toLocaleString(),dot:'thermal',sub:`${totalNight.toLocaleString()} ${t('layers.nightDet','夜間偵測')}`},
+    {name:t('layers.sdrCoverage','SDR Coverage'),count:D.sdr.total,dot:'sdr',sub:`${D.sdr.online} ${t('layers.online','上線')}`},
     {name:t('layers.maritimeWatch','Maritime Watch'),count:D.chokepoints.length,dot:'maritime',sub:t('layers.chokepoints','chokepoints')},
     {name:t('layers.nuclearSites','Nuclear Sites'),count:D.nuke.length,dot:'nuke',sub:t('layers.monitors','monitors')},
-    {name:t('layers.conflictEvents','Conflict Events'),count:conflictEvents,dot:'thermal',sub:`${conflictFatal.toLocaleString()} ${t('layers.fatalities','fatalities')}`},
+    {name:t('layers.conflictEvents','Conflict Events'),count:conflictEvents,dot:'thermal',sub:`${conflictFatal.toLocaleString()} ${t('layers.fatalities','死亡')}`},
     {name:t('layers.healthWatch','Health Watch'),count:D.who.length,dot:'health',sub:t('layers.whoAlerts','WHO alerts')},
-    {name:t('layers.worldNews','World News'),count:newsCount,dot:'news',sub:t('layers.rssGeolocated','RSS geolocated')},
-    {name:t('layers.osintFeed','OSINT Feed'),count:D.tg.posts,dot:'incident',sub:`${D.tg.urgent.length} ${t('badges.urgent','urgent').toLowerCase()}`},
+    {name:t('layers.worldNews','亞洲新聞'),count:newsCount,dot:'news',sub:t('layers.rssGeolocated','RSS geolocated')},
+    {name:t('layers.osintFeed','OSINT Feed'),count:D.tg.posts,dot:'incident',sub:`${D.tg.urgent.length} ${t('badges.urgent','緊急')}`},
     {name:t('layers.spaceActivity','Satellites'),count:D.space?.militarySats||0,dot:'space',sub:`${D.space?.totalNewObjects||0} ${t('space.newLast30d','new (30d)')}`}
   ];
   const allNormal=D.nuke.every(s=>!s.anom);
-  const nukeHtml=D.nuke.map(s=>`<div class="site-row"><span>${s.site}</span><span class="site-val">${s.n>0?(s.cpm?.toFixed(1)||'--')+' CPM':'No data'}</span></div>`).join('');
+  const nukeHtml=D.nuke.map(s=>`<div class="site-row"><span>${s.site}</span><span class="site-val">${s.n>0?(s.cpm?.toFixed(1)||'--')+' CPM':'無資料'}</span></div>`).join('');
   const vix=D.fred.find(f=>f.id==='VIXCLS');
   const hy=D.fred.find(f=>f.id==='BAMLH0A0HYM2');
   const usd=D.fred.find(f=>f.id==='DTWEXBGS');
@@ -632,35 +598,34 @@ function renderLeftRail(){
 
   document.getElementById('leftRail').innerHTML=`
     <div class="g-panel">
-      <div class="sec-head"><h3>${t('panels.sensorGrid','Sensor Grid')}</h3><span class="badge">${t('badges.live','LIVE')}</span></div>
+      <div class="sec-head"><h3>${t('panels.sensorGrid','亞洲感測網格')}</h3><span class="badge">${t('badges.live','即時')}</span></div>
       ${layers.map(l=>`<div class="layer-item"><div class="layer-left"><div class="ldot ${l.dot}"></div><div><div class="layer-name">${l.name}</div><div class="layer-sub">${l.sub}</div></div></div><div class="layer-count">${l.count}</div></div>`).join('')}
     </div>
     <div class="g-panel">
-      <div class="sec-head"><h3>${t('panels.nuclearWatch','Nuclear Watch')}</h3><span class="badge">${t('badges.radiation','RADIATION')}</span></div>
-      <div class="nuke-ok">${allNormal?'&#9679; '+t('nuclear.allSitesNormal','ALL SITES NORMAL'):'&#9888; '+t('nuclear.anomalyDetected','ANOMALY DETECTED')}</div>
+      <div class="sec-head"><h3>${t('panels.nuclearWatch','亞洲核電監測')}</h3><span class="badge">${t('badges.radiation','輻射')}</span></div>
+      <div class="nuke-ok">${allNormal?'&#9679; '+t('nuclear.allSitesNormal','所有核電廠正常'):'&#9888; '+t('nuclear.anomalyDetected','偵測到異常')}</div>
       ${nukeHtml}
     </div>
     <div class="g-panel">
-      <div class="sec-head"><h3>${t('panels.riskGauges','Risk Gauges')}</h3><span class="badge">${t('badges.stress','STRESS')}</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.vix','VIX')} (Fear)</span><span class="eval" style="color:${vix?.value>20?'var(--warn)':'var(--accent)'}">${vix?.value||'--'}</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.hySpread','HY Spread')}</span><span class="eval">${hy?.value||'--'}</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.usdIndex','USD Index')}</span><span class="eval">${usd?.value?.toFixed(1)||'--'}</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.joblessClaims','Jobless Claims')}</span><span class="eval">${claims?.value?.toLocaleString()||'--'}</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.mortgage30y','30Y Mortgage')}</span><span class="eval">${mort?.value||'--'}%</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.m2Supply','M2 Supply')}</span><span class="eval">$${(m2?.value/1000)?.toFixed(1)||'--'}T</span></div>
-      <div class="econ-row"><span class="elabel">${t('metrics.natDebt','Nat. Debt')}</span><span class="eval">$${(parseFloat(D.treasury.totalDebt)/1e12).toFixed(2)}T</span></div>
+      <div class="sec-head"><h3>${t('panels.riskGauges','亞洲風險儀表')}</h3><span class="badge">${t('badges.stress','壓力')}</span></div>
+      <div class="econ-row"><span class="elabel">外部波動率代理</span><span class="eval" style="color:${vix?.value>20?'var(--warn)':'var(--accent)'}">${vix?.value||'--'}</span></div>
+      <div class="econ-row"><span class="elabel">亞洲空域劇場</span><span class="eval">${D.air.length}</span></div>
+      <div class="econ-row"><span class="elabel">亞洲夜間熱點</span><span class="eval">${totalNight.toLocaleString()}</span></div>
+      <div class="econ-row"><span class="elabel">亞洲新聞串流</span><span class="eval">${newsCount}</span></div>
+      <div class="econ-row"><span class="elabel">核電監測點</span><span class="eval">${D.nuke.length}</span></div>
+      <div class="econ-row"><span class="elabel">海上咽喉點</span><span class="eval">${D.chokepoints.length}</span></div>
     </div>
     <div class="g-panel">
-      <div class="sec-head"><h3>${t('panels.spaceWatch','Space Watch')}</h3><span class="badge">${t('badges.orbital','CELESTRAK')}</span></div>
+      <div class="sec-head"><h3>${t('panels.spaceWatch','太空監測')}</h3><span class="badge">${t('badges.orbital','CELESTRAK')}</span></div>
       ${D.space ? `
-        <div class="econ-row"><span class="elabel">New Objects (30d)</span><span class="eval" style="color:var(--accent2)">${D.space.totalNewObjects||0}</span></div>
-        <div class="econ-row"><span class="elabel">Military Sats</span><span class="eval">${D.space.militarySats||0}</span></div>
+        <div class="econ-row"><span class="elabel">新物件（30日）</span><span class="eval" style="color:var(--accent2)">${D.space.totalNewObjects||0}</span></div>
+        <div class="econ-row"><span class="elabel">軍事衛星</span><span class="eval">${D.space.militarySats||0}</span></div>
         <div class="econ-row"><span class="elabel">Starlink</span><span class="eval">${D.space.constellations?.starlink||0}</span></div>
         <div class="econ-row"><span class="elabel">OneWeb</span><span class="eval">${D.space.constellations?.oneweb||0}</span></div>
-        ${D.space.iss ? `<div class="econ-row"><span class="elabel">ISS</span><span class="eval" style="color:var(--accent)">ALT ${((D.space.iss.apogee+D.space.iss.perigee)/2).toFixed(0)} km</span></div>` : ''}
-        ${Object.entries(D.space.militaryByCountry||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([c,n])=>`<div class="econ-row"><span class="elabel" style="padding-left:8px">${c}</span><span class="eval" style="font-size:10px">${n} mil sats</span></div>`).join('')}
-        ${(D.space.signals||[]).length ? `<div style="margin-top:6px;padding:6px 8px;border:1px solid rgba(68,204,255,0.2);background:rgba(68,204,255,0.04);font-family:var(--mono);font-size:9px;color:var(--accent2);line-height:1.5">${D.space.signals.slice(0,2).join('<br>')}</div>` : ''}
-      ` : '<div style="font-family:var(--mono);font-size:10px;color:var(--dim)">NO SPACE DATA</div>'}
+        ${D.space.iss ? `<div class="econ-row"><span class="elabel">ISS</span><span class="eval" style="color:var(--accent)">高度 ${((D.space.iss.apogee+D.space.iss.perigee)/2).toFixed(0)} km</span></div>` : ''}
+        ${Object.entries(D.space.militaryByCountry||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([c,n])=>`<div class="econ-row"><span class="elabel" style="padding-left:8px">${zhCountry(c)}</span><span class="eval" style="font-size:10px">${n} 軍事衛星</span></div>`).join('')}
+        ${(D.space.signals||[]).length ? `<div style="margin-top:6px;padding:6px 8px;border:1px solid rgba(68,204,255,0.2);background:rgba(68,204,255,0.04);font-family:var(--mono);font-size:9px;color:var(--accent2);line-height:1.5">亞洲太空物件與軍事衛星資料已更新</div>` : ''}
+      ` : '<div style="font-family:var(--mono);font-size:10px;color:var(--dim)">無太空資料</div>'}
     </div>`;
 }
 
@@ -680,8 +645,8 @@ function bindMapLifecycleEvents(){
 
 function renderMapLegend(){
   document.getElementById('mapLegend').innerHTML=
-    [{c:'#64f0c8',l:t('map.airTraffic','Air Traffic')},{c:'#ff5f63',l:t('map.thermalFire','Thermal/Fire')},{c:'rgba(255,120,80,0.8)',l:t('map.conflict','Conflict')},{c:'#44ccff',l:t('map.sdrReceiver','SDR Receiver')},
-     {c:'#ffe082',l:t('map.nuclearSite','Nuclear Site')},{c:'#b388ff',l:t('map.chokepoint','Chokepoint')},{c:'#ffb84c',l:t('map.osintEvent','OSINT Event')},{c:'#69f0ae',l:t('map.healthAlert','Health Alert')},{c:'#81d4fa',l:t('map.worldNews','World News')},{c:'#ff9800',l:t('map.weatherAlert','Weather Alert')},{c:'#cddc39',l:t('map.epaRadNet','EPA RadNet')},{c:'#ffffff',l:t('map.spaceStation','Space Station')},{c:'#6495ed',l:t('map.gdeltEvent','GDELT Event')}]
+    [{c:'#64f0c8',l:t('map.airTraffic','空域流量')},{c:'#ff5f63',l:t('map.thermalFire','熱點/火點')},{c:'rgba(255,120,80,0.8)',l:t('map.conflict','衝突')},{c:'#44ccff',l:t('map.sdrReceiver','SDR 接收器')},
+     {c:'#ffe082',l:t('map.nuclearSite','核電廠')},{c:'#b388ff',l:t('map.chokepoint','咽喉點')},{c:'#ffb84c',l:t('map.osintEvent','OSINT 事件')},{c:'#69f0ae',l:t('map.healthAlert','健康警示')},{c:'#81d4fa',l:t('map.worldNews','亞洲新聞')},{c:'#ff9800',l:t('map.weatherAlert','天氣警示')},{c:'#cddc39',l:t('map.epaRadNet','EPA 輻射網')},{c:'#ffffff',l:t('map.spaceStation','太空站')},{c:'#6495ed',l:t('map.gdeltEvent','GDELT 事件')}]
     .map(x=>`<div class="leg-item"><div class="leg-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
 }
 
@@ -692,14 +657,14 @@ function initMap(){
     if(globe && typeof globe.pauseAnimation === 'function') globe.pauseAnimation();
     document.getElementById('globeViz').style.display = 'none';
     document.getElementById('flatMapSvg').style.display = 'block';
-    document.getElementById('projToggle').textContent = 'GLOBE MODE';
-    document.getElementById('mapHint').textContent = 'SCROLL TO ZOOM · DRAG TO PAN';
+    document.getElementById('projToggle').textContent = t('map.globeMode','地球模式');
+    document.getElementById('mapHint').textContent = t('map.scrollToZoom','滾動縮放 · 拖曳平移');
     if(!flatSvg) initFlatMap();
     else { flatG.selectAll('*').remove(); drawFlatMap(); }
     setMapLoading(false);
     return;
   }
-  setMapLoading(true, 'Initializing 3D Globe');
+  setMapLoading(true, '初始化 3D 地球');
   requestAnimationFrame(() => {
     try {
       initGlobe();
@@ -708,8 +673,8 @@ function initMap(){
       isFlat = true;
       document.getElementById('globeViz').style.display = 'none';
       document.getElementById('flatMapSvg').style.display = 'block';
-      document.getElementById('projToggle').textContent = 'GLOBE MODE';
-      document.getElementById('mapHint').textContent = '3D LOAD FAILED · FLAT MODE';
+      document.getElementById('projToggle').textContent = t('map.globeMode','地球模式');
+      document.getElementById('mapHint').textContent = '3D 載入失敗 · 平面模式';
       if(!flatSvg) initFlatMap();
       else { flatG.selectAll('*').remove(); drawFlatMap(); }
       setMapLoading(false);
@@ -722,8 +687,8 @@ function initGlobe(){
     if(typeof globe.resumeAnimation === 'function') globe.resumeAnimation();
     document.getElementById('globeViz').style.display = 'block';
     document.getElementById('flatMapSvg').style.display = 'none';
-    document.getElementById('projToggle').textContent = 'FLAT MODE';
-    document.getElementById('mapHint').textContent = 'DRAG TO ROTATE · SCROLL TO ZOOM';
+    document.getElementById('projToggle').textContent = t('map.flatMode','平面模式');
+    document.getElementById('mapHint').textContent = '拖曳旋轉 · 滾動縮放';
     return;
   }
   const container = document.getElementById('mapContainer');
@@ -797,7 +762,7 @@ function initGlobe(){
   });
 
   // Set initial POV
-  globe.pointOfView(regionPOV.world, 0);
+  globe.pointOfView(regionPOV[currentRegion] || regionPOV.world, 0);
 
   // Auto-rotate slowly
   globe.controls().autoRotate = !lowPerfMode;
@@ -827,8 +792,8 @@ function initGlobe(){
   } else {
     document.getElementById('globeViz').style.display = 'block';
     document.getElementById('flatMapSvg').style.display = 'none';
-    document.getElementById('projToggle').textContent = 'FLAT MODE';
-    document.getElementById('mapHint').textContent = 'DRAG TO ROTATE · SCROLL TO ZOOM';
+    document.getElementById('projToggle').textContent = t('map.flatMode','平面模式');
+    document.getElementById('mapHint').textContent = '拖曳旋轉 · 滾動縮放';
   }
 
   globeInitialized = true;
@@ -840,15 +805,14 @@ function plotMarkers(){
   const labels = [];
 
   // === Air hotspots (green) ===
-  const airCoords=[{lat:30,lon:44},{lat:24,lon:120},{lat:49,lon:32},{lat:57,lon:24},{lat:14,lon:114},{lat:37,lon:127},{lat:25,lon:-80},{lat:4,lon:2},{lat:-34,lon:18},{lat:10,lon:51}];
-  if(flightsVisible) D.air.forEach((a,i)=>{
-    const c=airCoords[i]; if(!c) return;
+  if(flightsVisible) D.air.forEach(a=>{
+    const c=coordsForRegion(a.region); if(!c) return;
     points.push({
       lat:c.lat, lng:c.lon, size:0.25+a.total/200, alt:0.015,
       color:'rgba(100,240,200,0.8)', type:'air', priority:1,
       label: a.region.replace(' Region','')+' '+a.total,
-      popHead: a.region, popMeta: 'Air Activity',
-      popText: `${a.total} aircraft tracked<br>No callsign: ${a.noCallsign}<br>High altitude: ${a.highAlt}<br>Top: ${a.top.slice(0,3).map(t=>t[0]+' ('+t[1]+')').join(', ')}`
+      popHead: a.region, popMeta: '空域活動',
+      popText: `追蹤航機：${a.total}<br>無呼號：${a.noCallsign}<br>高空：${a.highAlt}<br>主要來源：${a.top.slice(0,3).map(t=>t[0]+' ('+t[1]+')').join('、')}`
     });
     labels.push({lat:c.lat, lng:c.lon+2, text:a.region.replace(' Region','')+' '+a.total, size:0.35, color:'rgba(106,138,130,0.8)'});
   });
@@ -859,8 +823,8 @@ function plotMarkers(){
       points.push({
         lat:f.lat, lng:f.lon, size:0.12+Math.min(f.frp/200,0.3), alt:0.008,
         color:'rgba(255,95,99,0.7)', type:'thermal', priority:3,
-        popHead:'Thermal Detection', popMeta:'FIRMS Satellite',
-        popText:`Region: ${t.region}<br>FRP: ${f.frp.toFixed(1)} MW<br>Total: ${t.det.toLocaleString()}<br>Night: ${t.night.toLocaleString()}`
+        popHead:'熱點偵測', popMeta:'FIRMS 衛星',
+        popText:`區域：${t.region}<br>熱輻射功率：${f.frp.toFixed(1)} MW<br>總偵測：${t.det.toLocaleString()}<br>夜間：${t.night.toLocaleString()}`
       });
     });
   });
@@ -870,20 +834,20 @@ function plotMarkers(){
     points.push({
       lat:cp.lat, lng:cp.lon, size:0.35, alt:0.02,
       color:'rgba(179,136,255,0.8)', type:'maritime', priority:1,
-      popHead:cp.label, popMeta:'Maritime Intelligence', popText:cp.note
+      popHead:cp.label, popMeta:'海事情資', popText:cp.note
     });
     labels.push({lat:cp.lat, lng:cp.lon+1.5, text:cp.label, size:0.3, color:'rgba(179,136,255,0.6)'});
   });
 
   // === Nuclear sites (yellow) ===
-  const nukeCoords=[{lat:47.5,lon:34.6},{lat:51.4,lon:30.1},{lat:28.8,lon:50.9},{lat:39.8,lon:125.8},{lat:37.4,lon:141},{lat:31.0,lon:35.1}];
+  const nukeFallbackCoords=[{lat:21.96,lon:120.75},{lat:37.42,lon:141.03},{lat:37.43,lon:138.60},{lat:35.32,lon:129.30},{lat:30.44,lon:120.94},{lat:8.17,lon:77.71}];
   D.nuke.forEach((n,i)=>{
-    const c=nukeCoords[i]; if(!c) return;
+    const c=coordsForNuclearSite(n, nukeFallbackCoords[i]); if(!c) return;
     points.push({
       lat:c.lat, lng:c.lon, size:0.3, alt:0.012,
       color: n.anom ? 'rgba(255,95,99,0.9)' : 'rgba(255,224,130,0.8)', type:'nuke', priority:2,
-      popHead:n.site, popMeta:'Radiation Monitoring',
-      popText:`Status: ${n.anom?'ANOMALY':'Normal'}<br>Avg CPM: ${n.cpm?.toFixed(1)||'No data'}<br>Readings: ${n.n}`
+      popHead:n.site, popMeta:'輻射監測',
+      popText:`狀態：${n.anom?'異常':'正常'}<br>平均 CPM：${n.cpm?.toFixed(1)||'無資料'}<br>讀值數：${n.n}`
     });
   });
 
@@ -893,7 +857,7 @@ function plotMarkers(){
       points.push({
         lat:r.lat, lng:r.lon, size:0.15, alt:0.005,
         color:'rgba(68,204,255,0.6)', type:'sdr', priority:3,
-        popHead:'SDR Receiver', popMeta:'KiwiSDR Network',
+        popHead:'SDR 接收器', popMeta:'KiwiSDR Network',
         popText:`${r.name}<br>Zone: ${z.region}<br>${z.count} in zone`
       });
     });
@@ -906,7 +870,7 @@ function plotMarkers(){
     points.push({
       lat:o.lat, lng:o.lon, size:0.3, alt:0.018,
       color:'rgba(255,184,76,0.8)', type:'osint', priority:2,
-      popHead:(post.channel||'').toUpperCase(), popMeta:`${post.views?.toLocaleString()||'?'} views`,
+      popHead:(post.channel||'').toUpperCase(), popMeta:`瀏覽 ${post.views?.toLocaleString()||'?'} 次`,
       popText:cleanText(post.text?.substring(0,200)||'')
     });
   });
@@ -927,8 +891,8 @@ function plotMarkers(){
     points.push({
       lat:n.lat, lng:n.lon, size:0.2, alt:0.008,
       color:'rgba(129,212,250,0.7)', type:'news', priority:3,
-      popHead:n.source+' NEWS', popMeta:n.region+' · '+getAge(n.date),
-      popText:cleanText(n.title)
+      popHead:zhSource(n.source)+' 亞洲新聞', popMeta:(n.region||'亞洲')+' · '+getAge(n.date),
+      popText:zhNewsHeadline(n)
     });
   });
 
@@ -947,7 +911,7 @@ function plotMarkers(){
     points.push({
       lat:s.lat, lng:s.lon, size:0.18, alt:0.006,
       color:'rgba(205,220,57,0.7)', type:'radiation', priority:3,
-      popHead:'RadNet: '+s.location, popMeta:'EPA Radiation Monitor',
+      popHead:'RadNet：'+s.location, popMeta:'EPA 輻射監測',
       popText:`${s.analyte||'--'}: ${s.result||'--'} ${s.unit||''}<br>State: ${s.state}`
     });
   });
@@ -957,7 +921,7 @@ function plotMarkers(){
     points.push({
       lat:s.lat, lng:s.lon, size:0.4, alt:0.04,
       color:'rgba(255,255,255,0.95)', type:'space', priority:1,
-      popHead:s.name, popMeta:'Space Station (approx.)',
+      popHead:s.name, popMeta:'太空站（估算）',
       popText:`Orbital position estimate<br>Lat: ${s.lat}° Lon: ${s.lon}°`
     });
     labels.push({lat:s.lat, lng:s.lon+3, text:s.name.split('(')[0].trim(), size:0.35, color:'rgba(255,255,255,0.7)'});
@@ -968,7 +932,7 @@ function plotMarkers(){
     points.push({
       lat:g.lat, lng:g.lon, size:0.15+Math.min(g.count/50,0.2), alt:0.007,
       color:'rgba(100,149,237,0.6)', type:'gdelt', priority:3,
-      popHead:'GDELT Event', popMeta:g.count+' reports',
+      popHead:'GDELT 事件', popMeta:g.count+' 筆報告',
       popText:g.name||'Global event detection'
     });
   });
@@ -985,8 +949,8 @@ function plotMarkers(){
       maxR: Math.max(2, Math.min(6, 1 + logFatal)),
       speed: 1.5 + Math.random(),
       period: 600 + Math.random()*600,
-      popHead: e.type || 'CONFLICT', popMeta: 'ACLED Conflict Data',
-      popText: `${e.fatalities} fatalities<br>${e.location}, ${e.country}<br>Date: ${e.date}`
+      popHead: '亞洲衝突事件', popMeta: 'ACLED 衝突資料',
+      popText: `死亡：${e.fatalities}<br>${e.location}, ${e.country}<br>日期：${e.date}`
     };
   });
   globe.ringsData(conflictRings);
@@ -994,13 +958,7 @@ function plotMarkers(){
   // === FLIGHT CORRIDORS (3D arcs) ===
   const arcs = [];
   if(flightsVisible){
-  const airCoordsFlight = [
-    {region:'Middle East',lat:30,lon:44}, {region:'Taiwan Strait',lat:24,lon:120},
-    {region:'Ukraine Region',lat:49,lon:32}, {region:'Baltic Region',lat:57,lon:24},
-    {region:'South China Sea',lat:14,lon:114}, {region:'Korean Peninsula',lat:37,lon:127},
-    {region:'Caribbean',lat:25,lon:-80}, {region:'Gulf of Guinea',lat:4,lon:2},
-    {region:'Cape Route',lat:-34,lon:18}, {region:'Horn of Africa',lat:10,lon:51}
-  ];
+  const airCoordsFlight = D.air.map(a => ({ region: a.region, ...coordsForRegion(a.region) }));
   const globalHubs = [
     {lat:40.6,lon:-73.8},{lat:51.5,lon:-0.5},{lat:25.3,lon:55.4},
     {lat:1.4,lon:103.8},{lat:-33.9,lon:151.2},{lat:-23.4,lon:-46.5}
@@ -1020,7 +978,7 @@ function plotMarkers(){
       arcs.push({
         startLat:from.lat, startLng:from.lon, endLat:to.lat, endLng:to.lon,
         color, stroke:Math.max(0.3, Math.min(1.2, traffic/120)),
-        label:`${from.region} ↔ ${to.region}: ${traffic} aircraft`
+        label:`${from.region} ↔ ${to.region}：${traffic} 架航機`
       });
     }
   }
@@ -1131,8 +1089,8 @@ function toggleMapMode(){
   isFlat = !isFlat;
   const btn = document.getElementById('projToggle');
   const hint = document.getElementById('mapHint');
-  btn.textContent = isFlat ? 'GLOBE MODE' : 'FLAT MODE';
-  hint.textContent = isFlat ? 'SCROLL TO ZOOM · DRAG TO PAN' : 'DRAG TO ROTATE · SCROLL TO ZOOM';
+  btn.textContent = isFlat ? t('map.globeMode','地球模式') : t('map.flatMode','平面模式');
+  hint.textContent = isFlat ? t('map.scrollToZoom','滾動縮放 · 拖曳平移') : '拖曳旋轉 · 滾動縮放';
   const globeEl = document.getElementById('globeViz');
   const flatEl = document.getElementById('flatMapSvg');
   if(isFlat){
@@ -1144,7 +1102,7 @@ function toggleMapMode(){
     else { flatG.selectAll('*').remove(); drawFlatMap(); }
   } else {
     flatEl.style.display = 'none';
-    setMapLoading(true, 'Initializing 3D Globe');
+    setMapLoading(true, '初始化 3D 地球');
     requestAnimationFrame(() => {
       try {
         initGlobe();
@@ -1155,8 +1113,8 @@ function toggleMapMode(){
         isFlat = true;
         globeEl.style.display = 'none';
         flatEl.style.display = 'block';
-        btn.textContent = 'GLOBE MODE';
-        hint.textContent = '3D LOAD FAILED · FLAT MODE';
+        btn.textContent = t('map.globeMode','地球模式');
+        hint.textContent = '3D 載入失敗 · 平面模式';
         if(!flatSvg) initFlatMap();
         else { flatG.selectAll('*').remove(); drawFlatMap(); }
         setMapLoading(false);
@@ -1191,6 +1149,7 @@ function drawFlatMap(){
       flatG.selectAll('path.land').data(countries.features).enter().append('path').attr('class','land').attr('d',flatPath);
       flatG.append('path').datum(topojson.mesh(world,world.objects.countries,(a,b)=>a!==b)).attr('class','border').attr('d',flatPath);
       plotFlatMarkers();
+      if(currentRegion !== 'world') setTimeout(() => setRegion(currentRegion), 0);
     });
 }
 
@@ -1205,64 +1164,63 @@ function plotFlatMarkers(){
     return g;
   };
   // Air
-  const airCoords=[{lat:30,lon:44},{lat:24,lon:120},{lat:49,lon:32},{lat:57,lon:24},{lat:14,lon:114},{lat:37,lon:127},{lat:25,lon:-80},{lat:4,lon:2},{lat:-34,lon:18},{lat:10,lon:51}];
   if(flightsVisible){
-    D.air.forEach((a,i)=>{
-      const c=airCoords[i];if(!c)return;
+    D.air.forEach(a=>{
+      const c=coordsForRegion(a.region);if(!c)return;
       const g=addPt(c.lat,c.lon,4+a.total/40,'rgba(100,240,200,0.7)','rgba(100,240,200,0.3)',
-        ev=>showPopup(ev,a.region,`${a.total} aircraft<br>No callsign: ${a.noCallsign}<br>High alt: ${a.highAlt}`,'Air Activity'),1);
+        ev=>showPopup(ev,a.region,`航機：${a.total}<br>無呼號：${a.noCallsign}<br>高空：${a.highAlt}`,'空域活動'),1);
       if(g) g.append('text').attr('class','marker-label').attr('x',10).attr('y',3).attr('fill','var(--dim)').attr('font-size','9px').attr('font-family','var(--mono)').text(a.region.replace(' Region','')+' '+a.total);
     });
   }
   // Thermal
   D.thermal.forEach(t=>t.fires.forEach(f=>{
     addPt(f.lat,f.lon,2+Math.min(f.frp/50,5),'rgba(255,95,99,0.6)','rgba(255,95,99,0.2)',
-      ev=>showPopup(ev,'Thermal',`${t.region}<br>FRP: ${f.frp.toFixed(1)} MW`,'FIRMS'),3);
+      ev=>showPopup(ev,'熱點',`${t.region}<br>熱輻射功率：${f.frp.toFixed(1)} MW`,'FIRMS'),3);
   }));
   // Chokepoints
   D.chokepoints.forEach(cp=>{
     const[x,y]=proj([cp.lon,cp.lat]);if(!x||!y)return;
     const g=mg.append('g').attr('transform',`translate(${x},${y})`).style('cursor','pointer').attr('data-priority',1)
-      .on('click',ev=>{ev.stopPropagation();showPopup(ev,cp.label,cp.note,'Maritime')});
+      .on('click',ev=>{ev.stopPropagation();showPopup(ev,cp.label,cp.note,'海事')});
     g.append('rect').attr('x',-4).attr('y',-4).attr('width',8).attr('height',8).attr('fill','rgba(179,136,255,0.7)').attr('stroke','rgba(179,136,255,0.3)').attr('stroke-width',0.5).attr('transform','rotate(45)');
     g.append('text').attr('class','marker-label').attr('x',8).attr('y',3).attr('fill','var(--dim)').attr('font-size','8px').attr('font-family','var(--mono)').text(cp.label);
   });
   // Nuclear
-  const nukeCoords=[{lat:47.5,lon:34.6},{lat:51.4,lon:30.1},{lat:28.8,lon:50.9},{lat:39.8,lon:125.8},{lat:37.4,lon:141},{lat:31.0,lon:35.1}];
-  D.nuke.forEach((n,i)=>{const c=nukeCoords[i];if(!c)return;addPt(c.lat,c.lon,4,'rgba(255,224,130,0.7)','rgba(255,224,130,0.3)',ev=>showPopup(ev,n.site,`CPM: ${n.cpm?.toFixed(1)||'--'}`,'Radiation'),2)});
+  const nukeFallbackCoords=[{lat:21.96,lon:120.75},{lat:37.42,lon:141.03},{lat:37.43,lon:138.60},{lat:35.32,lon:129.30},{lat:30.44,lon:120.94},{lat:8.17,lon:77.71}];
+  D.nuke.forEach((n,i)=>{const c=coordsForNuclearSite(n,nukeFallbackCoords[i]);if(!c)return;addPt(c.lat,c.lon,4,'rgba(255,224,130,0.7)','rgba(255,224,130,0.3)',ev=>showPopup(ev,n.site,`CPM：${n.cpm?.toFixed(1)||'--'}`,'輻射'),2)});
   // SDR
   D.sdr.zones.forEach(z=>z.receivers.forEach(r=>{addPt(r.lat,r.lon,2.5,'rgba(68,204,255,0.5)','rgba(68,204,255,0.2)',ev=>showPopup(ev,'SDR',`${r.name}<br>${z.region}`,'KiwiSDR'),3)}));
   // OSINT
   const osintGeo=[{lat:45,lon:41,idx:0},{lat:48,lon:37,idx:1},{lat:48.5,lon:37.5,idx:2},{lat:45,lon:40.2,idx:3},{lat:50.6,lon:36.6,idx:5},{lat:48.5,lon:35,idx:6}];
-  osintGeo.forEach(o=>{const p=D.tg.urgent[o.idx];if(!p)return;addPt(o.lat,o.lon,4,'rgba(255,184,76,0.7)','rgba(255,184,76,0.3)',ev=>showPopup(ev,(p.channel||'').toUpperCase(),cleanText(p.text?.substring(0,200)||''),`${p.views||'?'} views`),2)});
+  osintGeo.forEach(o=>{const p=D.tg.urgent[o.idx];if(!p)return;addPt(o.lat,o.lon,4,'rgba(255,184,76,0.7)','rgba(255,184,76,0.3)',ev=>showPopup(ev,(p.channel||'').toUpperCase(),cleanText(p.text?.substring(0,200)||''),`瀏覽 ${p.views||'?'} 次`),2)});
   // WHO
   const whoGeo=[{lat:0.3,lon:32.6},{lat:-6.2,lon:106.8},{lat:-4.3,lon:15.3},{lat:35,lon:105},{lat:12.5,lon:105},{lat:35,lon:105},{lat:28,lon:84},{lat:24,lon:45},{lat:30,lon:70},{lat:-0.8,lon:11.6}];
   D.who.slice(0,10).forEach((w,i)=>{const c=whoGeo[i];if(!c)return;addPt(c.lat,c.lon,3.5,'rgba(105,240,174,0.6)','rgba(105,240,174,0.2)',ev=>showPopup(ev,w.title,w.summary||'','WHO'),2)});
   // News
-  (D.news||[]).forEach(n=>{addPt(n.lat,n.lon,3,'rgba(129,212,250,0.6)','rgba(129,212,250,0.2)',ev=>showPopup(ev,n.source+' NEWS',cleanText(n.title),n.region),3)});
+  (D.news||[]).forEach(n=>{addPt(n.lat,n.lon,3,'rgba(129,212,250,0.6)','rgba(129,212,250,0.2)',ev=>showPopup(ev,zhSource(n.source)+' 亞洲新聞',zhNewsHeadline(n),n.region),3)});
   // NOAA weather
   (D.noaa?.alerts||[]).forEach(a=>{addPt(a.lat,a.lon,4,'rgba(255,152,0,0.7)','rgba(255,152,0,0.3)',ev=>showPopup(ev,a.event,a.headline||'','NOAA/NWS'),2)});
   // EPA RadNet
   (D.epa?.stations||[]).forEach(s=>{addPt(s.lat,s.lon,3,'rgba(205,220,57,0.6)','rgba(205,220,57,0.2)',ev=>showPopup(ev,'RadNet: '+s.location,`${s.analyte||'--'}: ${s.result||'--'} ${s.unit||''}`,'EPA'),3)});
   // Space stations
   (D.space?.stationPositions||[]).forEach(s=>{
-    const g=addPt(s.lat,s.lon,5,'rgba(255,255,255,0.9)','rgba(255,255,255,0.4)',ev=>showPopup(ev,s.name,'Orbital position estimate','Space Station'),1);
+    const g=addPt(s.lat,s.lon,5,'rgba(255,255,255,0.9)','rgba(255,255,255,0.4)',ev=>showPopup(ev,s.name,'軌道位置估算','太空站'),1);
     if(g) g.append('text').attr('class','marker-label').attr('x',8).attr('y',3).attr('fill','rgba(255,255,255,0.7)').attr('font-size','8px').attr('font-family','var(--mono)').text(s.name.split('(')[0].trim());
   });
   // GDELT geo events
-  (D.gdelt?.geoPoints||[]).forEach(g=>{addPt(g.lat,g.lon,2.5,'rgba(100,149,237,0.5)','rgba(100,149,237,0.2)',ev=>showPopup(ev,'GDELT Event',g.name||'','GDELT · '+g.count+' reports'),3)});
+  (D.gdelt?.geoPoints||[]).forEach(g=>{addPt(g.lat,g.lon,2.5,'rgba(100,149,237,0.5)','rgba(100,149,237,0.2)',ev=>showPopup(ev,'GDELT 事件',g.name||'','GDELT · '+g.count+' 筆報告'),3)});
   // ACLED
   (D.acled?.deadliestEvents||[]).filter(e=>e.lat&&e.lon).forEach(e=>{
     const[x,y]=proj([e.lon,e.lat]);if(!x||!y)return;
     const r=Math.max(4,Math.min(14,2+Math.log2(Math.max(e.fatalities,1))*1.5));
     const g=mg.append('g').attr('transform',`translate(${x},${y})`).style('cursor','pointer').attr('data-priority',1)
-      .on('click',ev=>{ev.stopPropagation();showPopup(ev,e.type||'CONFLICT',`${e.fatalities} fatalities<br>${e.location}, ${e.country}`,'ACLED')});
+      .on('click',ev=>{ev.stopPropagation();showPopup(ev,'亞洲衝突事件',`死亡：${e.fatalities}<br>${e.location}, ${e.country}`,'ACLED')});
     g.append('circle').attr('class','conflict-ring marker-circle').attr('r',r).attr('data-base-r',r).attr('fill','none').attr('stroke','rgba(255,120,80,0.7)').attr('stroke-width',1.5);
     g.append('circle').attr('r',r*0.4).attr('fill','rgba(255,120,80,0.3)');
   });
   // Flight corridors
   if(flightsVisible){
-    const airCoordsFlight=[{lat:30,lon:44},{lat:24,lon:120},{lat:49,lon:32},{lat:57,lon:24},{lat:14,lon:114},{lat:37,lon:127},{lat:25,lon:-80},{lat:4,lon:2},{lat:-34,lon:18},{lat:10,lon:51}];
+    const airCoordsFlight=D.air.map(a=>({region:a.region,...coordsForRegion(a.region)}));
     const hubs=[{lat:40.6,lon:-73.8},{lat:51.5,lon:-0.5},{lat:25.3,lon:55.4},{lat:1.4,lon:103.8},{lat:-33.9,lon:151.2},{lat:-23.4,lon:-46.5}];
     const cG=flatG.append('g').attr('class','corridors-layer');
     for(let i=0;i<D.air.length;i++){for(let j=i+1;j<D.air.length;j++){
@@ -1363,8 +1321,8 @@ function renderLower(){
       ? `$${q.price.toLocaleString()}`
       : isIndex
         ? q.price.toLocaleString(undefined, {maximumFractionDigits: 2})
-        : `$${q.price}`;
-    return `<div class="mc"><div class="ml">${q.name||q.symbol}</div><span class="mv" style="color:${clr}">${price}</span><span class="ms" style="color:${clr}">${arrow} ${q.changePct>=0?'+':''}${q.changePct}%</span></div>`;
+        : q.symbol?.endsWith('=X') ? q.price.toLocaleString(undefined,{maximumFractionDigits:4}) : `$${q.price}`;
+    return `<div class="mc"><div class="ml">${zhMarketName(q)}</div><span class="mv" style="color:${clr}">${price}</span><span class="ms" style="color:${clr}">${arrow} ${q.changePct>=0?'+':''}${q.changePct}%</span></div>`;
   };
 
   // VIX from Yahoo Finance live data (fallback to FRED)
@@ -1373,19 +1331,17 @@ function renderLower(){
   const vixVal = vixLive?.value || vixFred?.value;
   const vixChg = vixLive?.changePct != null ? `${vixLive.changePct>=0?'+':''}${vixLive.changePct}%` : '';
   const fmtMarketPrice = (price) => price != null ? `$${price.toLocaleString(undefined,{maximumFractionDigits:2})}` : '--';
-  const dayMove = (pct) => pct != null ? `${pct>=0?'+':''}${pct}% today` : '';
+  const dayMove = (pct) => pct != null ? `今日 ${pct>=0?'+':''}${pct}%` : '';
 
   const metrics=[
-    {l:'WTI Crude',v:`$${D.energy.wti}`,s:'$/bbl',p:70},
-    {l:'Brent',v:`$${D.energy.brent}`,s:'$/bbl',p:75},
-    {l:'Nat Gas',v:`$${D.energy.natgas||'--'}`,s:'$/MMBtu',p:30},
-    {l:'Gold',v:fmtMarketPrice(metals.gold),s:dayMove(metals.goldChangePct)||'COMEX proxy',p:58},
-    {l:'Silver',v:fmtMarketPrice(metals.silver),s:dayMove(metals.silverChangePct)||'COMEX proxy',p:54},
-    {l:'VIX',v:vixVal?vixVal.toFixed(1):'--',s:vixChg||'volatility index',p:vixVal?Math.min(vixVal*2.5,100):30},
-    {l:'Fed Funds',v:ff?`${ff.value}%`:'--',s:ff?.date||'',p:36},
-    {l:'GSCPI',v:gscpi?gscpi.value.toFixed(2):'--',s:gscpi?.interpretation||'',p:49},
-    {l:'CPI MoM',v:cpi?`+${cpi.momChangePct?.toFixed(2)}%`:'--',s:cpi?.date||'',p:37},
-    {l:'Unemployment',v:ue?`${ue.value}%`:'--',s:ue?`${ue.momChange>0?'+':''}${ue.momChange} vs prior`:'',p:44},
+    {l:'WTI 原油',v:`$${D.energy.wti}`,s:'美元/桶',p:70},
+    {l:'布蘭特原油',v:`$${D.energy.brent}`,s:'美元/桶',p:75},
+    {l:'天然氣',v:`$${D.energy.natgas||'--'}`,s:'美元/MMBtu',p:30},
+    {l:'黃金',v:fmtMarketPrice(metals.gold),s:dayMove(metals.goldChangePct)||'亞洲避險代理',p:58},
+    {l:'白銀',v:fmtMarketPrice(metals.silver),s:dayMove(metals.silverChangePct)||'工業金屬代理',p:54},
+    {l:'波動率',v:vixVal?vixVal.toFixed(1):'--',s:vixChg||'外部風險代理',p:vixVal?Math.min(vixVal*2.5,100):30},
+    {l:'供應鏈壓力',v:gscpi?gscpi.value.toFixed(2):'--',s:'亞洲出口敏感指標',p:49},
+    {l:'能源敏感度',v:D.energy.brent?`${Math.round(Number(D.energy.brent))}`:'--',s:'進口成本壓力',p:60},
   ];
 
   // Attach sparklines from FRED recent data
@@ -1412,6 +1368,10 @@ function renderLower(){
     const sl = s.toLowerCase();
     // Africa-focused sources first (before generic DW/NYT)
     if (sl.includes('dw africa') || sl.includes('africa news') || sl.includes('nyt africa') || sl.includes('rfi')) return 'af';
+    if (sl.includes('cna taiwan')) return 'tw';
+    if (sl.includes('cna singapore')) return 'sg';
+    if (sl.includes('nikkei')) return 'jp';
+    if (sl.includes('bangkok')) return 'sea';
     if (sl.includes('mercopress')) return 'sa';
     if (sl.includes('indian express') || sl.includes('the hindu')) return 'ind';
     if (sl.includes('sbs')) return 'anz';
@@ -1429,79 +1389,56 @@ function renderLower(){
     const sc = srcClass(n.source);
     const age = n.timestamp ? getAge(n.timestamp) : '';
     const urlAttr = n.url ? ` data-url="${String(n.url).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"` : '';
-    return `<div class="tk-card ${n.urgent?'urgent':''} ${n.url?'clickable':''}"${urlAttr}><span class="tk-src ${sc}">${(n.source||'NEWS').substring(0,12)}</span><span class="tk-time">${age}</span><div class="tk-head">${cleanText(n.headline||'')}</div>${n.url?'<span class="tk-link">&#8599;</span>':''}</div>`;
+    return `<div class="tk-card ${n.urgent?'urgent':''} ${n.url?'clickable':''}"${urlAttr}><span class="tk-src ${sc}">${zhSource(n.source).substring(0,12)}</span><span class="tk-time">${age}</span><div class="tk-head">${zhNewsHeadline(n)}</div>${n.url?'<span class="tk-link">&#8599;</span>':''}</div>`;
   }).join('');
   const tickerDuration = Math.max(20, feed.length * 2.5);
 
-  // Leverageable Ideas (LLM-only feature)
-  const hasIdeas = D.ideas && D.ideas.length > 0;
-  const ideasHtml = hasIdeas ? (D.ideas||[]).map(idea=>`
-    <div class="idea-card">
-      <span class="idea-type ${(idea.type||'').toLowerCase()}">${(idea.type||'').toUpperCase()}</span>
-      ${idea.ticker ? `<span class="idea-horizon">${idea.ticker}</span>` : ''}
-      ${idea.horizon ? `<span class="idea-horizon">${idea.horizon}</span>` : ''}
-      <span class="idea-conf">${idea.confidence} confidence</span>
-      <div class="idea-title">${idea.title}</div>
-      <div class="idea-text">${idea.text||idea.rationale||''}</div>
-      ${idea.risk ? `<div class="idea-text" style="color:var(--warn);margin-top:3px">Risk: ${idea.risk}</div>` : ''}
-    </div>`).join('') : `<div style="padding:20px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:11px">
-      <div style="font-size:24px;margin-bottom:8px;opacity:0.3">&#9888;</div>
-      <div>LLM NOT CONFIGURED</div>
-      <div style="font-size:9px;margin-top:6px;opacity:0.6">Set LLM_PROVIDER + credentials in .env to enable AI-powered trade ideas</div>
-    </div>`;
 
 
   const tickerPanel = `<div class="g-panel lp-ticker" style="display:flex;flex-direction:column">
-      <div class="sec-head"><h3>${t('panels.newsTicker','Live News Ticker')}</h3><span class="badge">${feed.length} ${t('badges.items','ITEMS')}</span></div>
+      <div class="sec-head"><h3>${t('panels.newsTicker','亞洲即時新聞')}</h3><span class="badge">${feed.length} ${t('badges.items','ITEMS')}</span></div>
       <div class="ticker-wrap" style="--ticker-duration:${tickerDuration}s">
         <div class="ticker-track">${tickerCards}${lowPerfMode ? '' : tickerCards}</div>
       </div>
     </div>`;
   const osintPanel = mobile ? buildOsintPanel('lp-osint', 240) : '';
   const macroPanel = `<div class="g-panel lp-macro">
-      <div class="sec-head"><h3>${t('panels.macroMarkets','Macro + Markets')}</h3><span class="badge">${mkt.timestamp?t('badges.live','LIVE'):t('badges.delayed','DELAYED')}</span></div>
+      <div class="sec-head"><h3>${t('panels.macroMarkets','亞洲宏觀與市場')}</h3><span class="badge">${mkt.timestamp?t('badges.live','即時'):t('badges.delayed','延遲')}</span></div>
       ${hasMarkets?`<div style="margin-bottom:8px">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">INDEXES</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">亞洲指數</div>
         <div class="metrics-row">${indexCards}</div>
       </div>
       <div style="margin-bottom:8px">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">CRYPTO</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">加密資產</div>
         <div class="metrics-row">${cryptoCards}</div>
       </div>`:''}
       <div style="margin-bottom:8px">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">ENERGY + METALS + MACRO</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">能源 + 金屬 + 亞洲宏觀代理</div>
         <div class="metrics-row">${metrics.map(m=>{
           const sparkSvg = m.spark ? mkSparkSvg(m.spark, m.sparkUp) : '';
           return `<div class="mc"><div class="ml">${m.l}</div><span class="mv">${m.v}${sparkSvg}</span><span class="ms">${m.s}</span><div class="mbar"><span style="width:${m.p}%"></span></div></div>`;
         }).join('')}</div>
       </div>
       <div style="margin-top:6px">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:4px">WTI 5-DAY</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:4px">WTI 五日趨勢</div>
         <div class="spark">${sparkHtml}</div>
       </div>
     </div>`;
-  const ideasPanel = `<div class="g-panel lp-ideas">
-      <div class="sec-head"><h3>${t('panels.tradeIdeas','Leverageable Ideas')}</h3>${D.ideasSource==='llm'?'<span class="ideas-src llm">'+t('ideas.aiEnhanced','AI ENHANCED')+'</span>':D.ideasSource==='disabled'?'<span class="ideas-src static">'+t('ideas.llmOff','LLM OFF')+'</span>':'<span class="ideas-src static">'+t('ideas.pending','PENDING')+'</span>'}</div>
-      ${ideasHtml}
-      <div class="disclosure">FOR INFORMATIONAL PURPOSES ONLY. This is not financial advice, a recommendation to buy or sell any security, or a solicitation of any kind. All signal-based observations are derived from publicly available OSINT data and should not be relied upon for investment decisions. Consult a licensed financial advisor before making any investment. Past performance does not guarantee future results.</div>
-    </div>`;
-  document.getElementById('lowerGrid').innerHTML=`${tickerPanel}${osintPanel}${macroPanel}${ideasPanel}`;
+  document.getElementById('lowerGrid').innerHTML=`${tickerPanel}${osintPanel}${macroPanel}`;
 }
 
 // === RIGHT RAIL ===
 function renderRight(){
   const mobile = isMobileLayout();
-  // CROSS-SOURCE SIGNALS — moved from lower grid to right rail
-  const signals=D.tSignals.slice(0,6).map((s,i)=>`<div class="signal-row"><strong>Signal ${i+1}</strong><p>${s}</p></div>`).join('');
+  const signals=buildAsiaSignals().map((s,i)=>`<div class="signal-row"><strong>亞洲訊號 ${i+1}</strong><p>${s}</p></div>`).join('');
 
-  // OSINT TICKER — Telegram + WHO as flowing cards
   const signalMetrics=[
-    {l:'Incident Tempo',v:D.tg.urgent.length,p:70},
-    {l:'Air Theaters',v:D.air.length,p:60},
-    {l:'Thermal Spikes',v:D.thermal.reduce((s,t)=>s+t.hc,0),p:80},
-    {l:'SDR Nodes',v:D.sdr.total,p:92},
-    {l:'Chokepoints',v:D.chokepoints.length,p:50},
-    {l:'WHO Alerts',v:D.who.length,p:40}
+    {l:'緊急串流',v:D.tg.urgent.length,p:70},
+    {l:'亞洲空域',v:D.air.length,p:60},
+    {l:'熱點強度',v:D.thermal.reduce((s,t)=>s+t.hc,0),p:80},
+    {l:'SDR 節點',v:D.sdr.total,p:92},
+    {l:'海上咽喉',v:D.chokepoints.length,p:50},
+    {l:'健康警示',v:D.who.length,p:40}
   ];
 
   // DELTA PANEL — what changed since last sweep
@@ -1515,57 +1452,57 @@ function renderRight(){
   const newSigs = (delta.signals?.new || []).slice(0,4);
   const deltaRows = [];
   for(const s of newSigs){
-    deltaRows.push(`<div class="delta-row new"><span class="delta-badge new">NEW</span><span class="delta-label">${s.reason||s.label||s.key}</span></div>`);
+    deltaRows.push(`<div class="delta-row new"><span class="delta-badge new">新增</span><span class="delta-label">亞洲新增訊號：${zhSignalText(s.reason||s.label||s.key)}</span></div>`);
   }
   for(const s of escalated){
     const sev = s.severity==='critical'?'style="color:var(--warn);font-weight:600"':s.severity==='high'?'style="color:#ffab40"':'';
     const val = s.pctChange!==undefined?`${s.pctChange>0?'+':''}${s.pctChange}%`:`${s.change>0?'+':''}${s.change}`;
-    deltaRows.push(`<div class="delta-row"><span class="delta-badge up">&#9650;</span><span class="delta-label" ${sev}>${s.label}</span><span class="delta-val">${s.from}→${s.to} (${val})</span></div>`);
+    deltaRows.push(`<div class="delta-row"><span class="delta-badge up">&#9650;</span><span class="delta-label" ${sev}>亞洲訊號升高</span><span class="delta-val">${val}</span></div>`);
   }
   for(const s of deescalated){
     const val = s.pctChange!==undefined?`${s.pctChange}%`:`${s.change}`;
-    deltaRows.push(`<div class="delta-row"><span class="delta-badge down">&#9660;</span><span class="delta-label">${s.label||s.key}</span><span class="delta-val">${s.from}→${s.to} (${val})</span></div>`);
+    deltaRows.push(`<div class="delta-row"><span class="delta-badge down">&#9660;</span><span class="delta-label">亞洲訊號降溫</span><span class="delta-val">${val}</span></div>`);
   }
-  const deltaHtml = hasDelta ? deltaRows.join('') : `<div style="padding:12px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:10px">${t('delta.noChanges','No changes since last sweep')}</div>`;
+  const deltaHtml = hasDelta ? deltaRows.join('') : `<div style="padding:12px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:10px">${t('delta.noChanges','與上次亞洲掃描相比無變化')}</div>`;
 
   document.getElementById('rightRail').innerHTML=`
     <div class="g-panel right-signals">
-      <div class="sec-head"><h3>${t('panels.crossSourceSignals','Cross-Source Signals')}</h3><span class="badge">${t('badges.worldview','WORLDVIEW')}</span></div>
+      <div class="sec-head"><h3>${t('panels.crossSourceSignals','亞洲跨來源訊號')}</h3><span class="badge">${'亞洲總覽'}</span></div>
       ${signals}
     </div>
     ${mobile ? '' : buildOsintPanel('right-osint', 260)}
     <div class="g-panel right-core">
-      <div class="sec-head"><h3>${t('panels.signalCore','Signal Core')}</h3><span class="badge">${t('badges.hotMetrics','HOT METRICS')}</span></div>
+      <div class="sec-head"><h3>${t('panels.signalCore','亞洲訊號核心')}</h3><span class="badge">${'重點指標'}</span></div>
       ${signalMetrics.map(s=>`<div class="sm"><span class="sml">${s.l}</span><div class="smb"><span style="width:${s.p}%"></span></div><span class="smv">${s.v}</span></div>`).join('')}
     </div>
     <div class="g-panel right-delta">
-      <div class="sec-head"><h3>${t('panels.sweepDelta','Sweep Delta')}</h3><span class="badge ${dirClass}">${dirEmoji} ${ds.direction?t('delta.'+ds.direction,ds.direction.toUpperCase()):t('delta.baseline','BASELINE')}</span></div>
+      <div class="sec-head"><h3>${t('panels.sweepDelta','亞洲掃描變化')}</h3><span class="badge ${dirClass}">${dirEmoji} ${ds.direction?t('delta.'+ds.direction,'變化'):t('delta.baseline','基準')}</span></div>
       ${hasDelta?`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;font-family:var(--mono);font-size:10px">
-        <span style="color:var(--dim)">${t('delta.changes','Changes')}: <span style="color:var(--accent)">${ds.totalChanges}</span></span>
-        <span style="color:var(--dim)">${t('delta.critical','Critical')}: <span style="color:${ds.criticalChanges>0?'var(--warn)':'var(--dim)'}">${ds.criticalChanges||0}</span></span>
-        ${ds.signalBreakdown?`<span style="color:var(--dim)">${t('delta.new','New')}: <span style="color:#4dd0e1">${ds.signalBreakdown.new}</span> &#8593;${ds.signalBreakdown.escalated} &#8595;${ds.signalBreakdown.deescalated}</span>`:''}
+        <span style="color:var(--dim)">${t('delta.changes','變化')}: <span style="color:var(--accent)">${ds.totalChanges}</span></span>
+        <span style="color:var(--dim)">${t('delta.critical','關鍵')}: <span style="color:${ds.criticalChanges>0?'var(--warn)':'var(--dim)'}">${ds.criticalChanges||0}</span></span>
+        ${ds.signalBreakdown?`<span style="color:var(--dim)">${t('delta.new','新增')}: <span style="color:#4dd0e1">${ds.signalBreakdown.new}</span> &#8593;${ds.signalBreakdown.escalated} &#8595;${ds.signalBreakdown.deescalated}</span>`:''}
       </div>`:''}
       <div class="delta-list">${deltaHtml}</div>
     </div>`;
 }
 
 // === HELPERS ===
-function getAge(d){const ms=Date.now()-new Date(d).getTime();const h=Math.floor(ms/3600000);if(h<1)return 'just now';if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago'}
+function getAge(d){const ms=Date.now()-new Date(d).getTime();const h=Math.floor(ms/3600000);if(h<1)return '剛剛';if(h<24)return h+' 小時前';return Math.floor(h/24)+' 天前'}
 function cleanText(t){return t.replace(/&#39;/g,"'").replace(/&#33;/g,"!").replace(/&amp;/g,"&").replace(/<[^>]+>/g,'')}
 function safeExternalUrl(raw){try{const u=new URL(raw,location.href);return u.protocol==='http:'||u.protocol==='https:'?u.toString():null}catch{return null}}
 
 // === BOOT SEQUENCE ===
 function runBoot(){
-  const acledStatus = D.acled?.totalEvents > 0 ? `<span class="ok">${D.acled.totalEvents} EVENTS</span>` : '<span style="color:var(--warn)">DEGRADED</span>';
+  const acledStatus = D.acled?.totalEvents > 0 ? `<span class="ok">${D.acled.totalEvents} 事件</span>` : '<span style="color:var(--warn)">降級</span>';
   const lines=[
     {text:t('boot.initializing','INITIALIZING CRUCIX ENGINE v2.1.0'),delay:0},
-    {text:t('boot.connecting','CONNECTING {count} OSINT SOURCES...').replace('{count}',D.meta.sourcesQueried),delay:400},
-    {text:'&#9500;&#9472; '+t('boot.sourceGroup1','OPENSKY · FIRMS · KIWISDR · MARITIME'),delay:700},
+    {text:t('boot.connecting','連線 {count} 個 OSINT 來源…').replace('{count}',D.meta.sourcesQueried),delay:400},
+    {text:'&#9500;&#9472; '+t('boot.sourceGroup1','OPENSKY · FIRMS · KIWISDR · 海事'),delay:700},
     {text:'&#9500;&#9472; '+t('boot.sourceGroup2','FRED · BLS · EIA · TREASURY · GSCPI'),delay:900},
     {text:'&#9500;&#9472; '+t('boot.sourceGroup3','TELEGRAM · SAFECAST · EPA · WHO · OFAC'),delay:1100},
     {text:'&#9492;&#9472; '+t('boot.sourceGroup4','GDELT · NOAA · PATENTS · BLUESKY · REDDIT'),delay:1300},
     {text:t('boot.sweepComplete','SWEEP COMPLETE — {ok}/{total} SOURCES').replace('{ok}',`<span class="count">${D.meta.sourcesOk}</span>`).replace('{total}',D.meta.sourcesQueried)+' <span class="ok">'+t('boot.ok','OK')+'</span>',delay:1700},
-    {text:t('boot.acledLayer','ACLED CONFLICT LAYER')+': '+acledStatus,delay:1900},
+    {text:t('boot.acledLayer','ACLED 衝突圖層')+': '+acledStatus,delay:1900},
     {text:t('boot.flightCorridors','FLIGHT CORRIDORS')+': <span class="ok">'+t('boot.active','ACTIVE')+'</span> &#183; '+t('boot.dualProjection','DUAL PROJECTION')+': <span class="ok">'+t('boot.ready','READY')+'</span>',delay:2100},
     {text:t('boot.intelligenceSynthesis','INTELLIGENCE SYNTHESIS')+': <span class="ok">'+t('boot.active','ACTIVE')+'</span>',delay:2400},
   ];
@@ -1592,8 +1529,7 @@ function runBoot(){
     setTimeout(()=>gsap.from('.layer-item,.site-row,.econ-row',{opacity:0,x:-12,duration:0.25,stagger:0.03,ease:'power1.out'}),500);
     setTimeout(()=>gsap.from('.ic',{opacity:0,y:12,duration:0.25,stagger:0.03,ease:'power1.out'}),600);
     setTimeout(()=>gsap.from('.mc',{opacity:0,y:8,duration:0.25,stagger:0.04,ease:'power1.out'}),800);
-    setTimeout(()=>gsap.from('.idea-card',{opacity:0,x:12,duration:0.3,stagger:0.06,ease:'power1.out'}),900);
-    setTimeout(()=>{
+        setTimeout(()=>{
       document.querySelectorAll('.mbar span,.smb span').forEach(bar=>{const w=bar.style.width;bar.style.width='0%';gsap.to(bar,{width:w,duration:1,ease:'power2.out'})});
       document.querySelectorAll('.spark-bar').forEach(bar=>{const h=bar.style.height;bar.style.height='0%';gsap.to(bar,{height:h,duration:0.8,ease:'power2.out'})});
     },1000);
@@ -1603,20 +1539,18 @@ function runBoot(){
 function isMobileLayout(){ return window.innerWidth <= 1100; }
 
 function buildOsintPanel(panelClass='', maxHeight=260){
-  const allPosts=[...D.tg.urgent,...D.tg.topPosts].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-  const whoItems=D.who.slice(0,4).map(w=>({channel:'WHO ALERT',text:w.title,date:w.date,isWho:true}));
-  const osintItems=[...allPosts.slice(0,15),...whoItems];
+  const newsItems=(D.newsFeed||[]).slice(0,12).map(n=>({
+    source:n.source, region:n.region, text:zhNewsHeadline(n), date:n.timestamp, urgent:n.urgent
+  }));
+  const whoItems=D.who.slice(0,4).map(w=>({source:'WHO ALERT',region:'亞洲健康',text:'亞洲健康警示更新：世界衛生組織發布最新事件。',date:w.date,urgent:false}));
+  const osintItems=[...newsItems,...whoItems];
   const osintCards=osintItems.map(p=>{
-    const isU=p.urgentFlags&&p.urgentFlags.length>0;
-    const views=p.views?p.views>=1000?`${(p.views/1000).toFixed(0)}K`:p.views:'';
     const age=p.date?getAge(p.date):'';
-    const flags=(p.urgentFlags||[]).map(f=>`<span class="tk-src tg" style="margin-right:2px">${f}</span>`).join('');
-    const srcCls=p.isWho?'style="color:#69f0ae;border-color:rgba(105,240,174,0.4)"':'class="tk-src tg"';
-    return `<div class="tk-card ${isU?'urgent':''}"><span ${srcCls}>${(p.channel||'OSINT').toUpperCase().substring(0,14)}</span>${views?`<span class="tk-src other">${views}</span>`:''}<span class="tk-time">${age}</span>${flags}<div class="tk-head">${cleanText((p.text||'').substring(0,160))}</div></div>`;
+    return `<div class="tk-card ${p.urgent?'urgent':''}"><span class="tk-src tg">${zhSource(p.source).substring(0,12)}</span><span class="tk-src other">${p.region||'亞洲'}</span><span class="tk-time">${age}</span><div class="tk-head">${p.text}</div></div>`;
   }).join('');
   const osintDuration=Math.max(25,osintItems.length*3);
   return `<div class="g-panel ${panelClass}" style="display:flex;flex-direction:column">
-      <div class="sec-head"><h3>${t('panels.osintStream','OSINT Stream')}</h3><span class="badge">${D.tg.urgent.length} ${t('badges.urgent','URGENT')}</span></div>
+      <div class="sec-head"><h3>${t('panels.osintStream','亞洲串流')}</h3><span class="badge">${osintItems.length} ${t('badges.items','項')}</span></div>
       <div class="ticker-wrap" style="--ticker-duration:${osintDuration}s;max-height:${maxHeight}px">
         <div class="ticker-track">${osintCards}${lowPerfMode ? '' : osintCards}</div>
       </div>
@@ -1632,10 +1566,10 @@ function renderGlossary(){
         <strong>${item.term}</strong>
         <span class="glossary-tag">${item.category}</span>
       </div>
-      <div class="glossary-line"><span class="glossary-label">Meaning</span>${item.meaning}</div>
-      <div class="glossary-line"><span class="glossary-label">Why it matters</span>${item.matters}</div>
-      <div class="glossary-line"><span class="glossary-label">Not proof of</span>${item.notMeaning}</div>
-      <div class="glossary-line"><span class="glossary-label">Example</span>${item.example}</div>
+      <div class="glossary-line"><span class="glossary-label">含義</span>${item.meaning}</div>
+      <div class="glossary-line"><span class="glossary-label">為何重要</span>${item.matters}</div>
+      <div class="glossary-line"><span class="glossary-label">不能證明</span>${item.notMeaning}</div>
+      <div class="glossary-line"><span class="glossary-label">範例</span>${item.example}</div>
     </div>
   `).join('');
 }
@@ -1762,18 +1696,20 @@ function init(){
 document.addEventListener('DOMContentLoaded', () => {
   const hasInlineData = !!(D && D.meta);
   const canProbeApi = location.protocol !== 'file:';
+  const serverMode = window.__CRUCIX_SERVER_MODE__ === true;
 
-  if (canProbeApi && !hasInlineData) {
-    // Server mode: always fetch live data from API (ignore any stale inline D)
+  if (serverMode && canProbeApi) {
+    // Express server mode: fetch the live in-memory sweep and keep SSE enabled.
+    // Static hosts such as Cloudflare Pages do not expose /api/data or /events,
+    // so they intentionally skip this path and render the inline snapshot.
     fetch('/api/data')
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error(`API returned ${r.status}`); return r.json(); })
       .then(data => { D = data; init(); connectSSE(); })
       .catch(() => {
-        // Should not reach here — server routes to loading.html when no data
-        if (D && D.meta) { init(); connectSSE(); }
+        if (hasInlineData) init();
       });
   } else if (hasInlineData) {
-    // File mode: use inline data
+    // Static/file mode: use the embedded snapshot from jarvis.html.
     init();
   }
 });

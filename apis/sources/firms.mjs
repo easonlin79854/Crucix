@@ -51,10 +51,12 @@ async function fetchFires(opts = {}) {
 
 // Key conflict/hotspot zones
 const HOTSPOTS = {
-  middleEast: { west: 30, south: 12, east: 65, north: 42, label: 'Middle East' },
-  ukraine: { west: 22, south: 44, east: 41, north: 53, label: 'Ukraine' },
-  iran: { west: 44, south: 25, east: 63, north: 40, label: 'Iran' },
-  sudanHorn: { west: 21, south: 2, east: 52, north: 23, label: 'Sudan / Horn of Africa' },
+  taiwan: { west: 119, south: 21, east: 123, north: 26, label: 'Taiwan' },
+  southChinaSea: { west: 105, south: 5, east: 122, north: 23, label: 'South China Sea' },
+  eastChinaSea: { west: 120, south: 24, east: 132, north: 34, label: 'East China Sea' },
+  koreanPeninsula: { west: 124, south: 33, east: 132, north: 43, label: 'Korean Peninsula' },
+  japan: { west: 129, south: 30, east: 146, north: 46, label: 'Japan' },
+  philippines: { west: 116, south: 4, east: 127, north: 21, label: 'Philippines' },
   myanmar: { west: 92, south: 9, east: 102, north: 29, label: 'Myanmar' },
   southAsia: { west: 60, south: 5, east: 98, north: 37, label: 'South Asia' },
 };

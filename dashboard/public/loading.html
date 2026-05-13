@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRUCIX — Initializing</title>
+<title>CRUCIX — 初始化中</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -47,7 +47,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--m
 
   <div id="status">
     <span class="blink"></span>
-    <span id="statusText">COLLECTING DATA...</span>
+    <span id="statusText">資料蒐集中…</span>
   </div>
 
   <div id="countdown">
@@ -60,13 +60,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--m
 const SWEEP_ESTIMATE_S = 50; // estimated sweep duration in seconds
 
 const lines = [
-  'CRUCIX INTELLIGENCE ENGINE v2.0.0',
-  'INITIATING FIRST SWEEP...',
-  '├── CONNECTING 25 OSINT SOURCES',
-  '├── GDELT · OPENSKY · FIRMS · MARITIME · SAFECAST',
+  'CRUCIX 情資引擎 v2.0.0',
+  '啟動首次掃描…',
+  '├── 連線 25 個 OSINT 來源',
+  '├── GDELT · OPENSKY · FIRMS · 海事 · SAFECAST',
   '├── FRED · BLS · EIA · TREASURY · GSCPI',
   '└── TELEGRAM · WHO · OFAC · ACLED · REDDIT · BLUESKY',
-  '<span class="ok">AWAITING SWEEP COMPLETION...</span>',
+  '<span class="ok">等待掃描完成…</span>',
 ];
 
 const container = document.getElementById('bootLines');
@@ -80,11 +80,11 @@ lines.forEach((text, i) => {
 });
 
 const statusMessages = [
-  'COLLECTING DATA...',
-  'PROCESSING SOURCES...',
-  'SYNTHESIZING SIGNALS...',
-  'CORRELATING FEEDS...',
-  'AWAITING COMPLETION...',
+  '資料蒐集中…',
+  '處理來源資料…',
+  '綜整情資訊號…',
+  '交叉比對新聞與資料流…',
+  '等待完成…',
 ];
 let statusIdx = 0;
 const statusText = document.getElementById('statusText');
@@ -103,13 +103,13 @@ function startCountdown(elapsedSeconds) {
 
   function tick() {
     if (remaining <= 0) {
-      etaText.textContent = 'FINALIZING...';
+      etaText.textContent = '最後整理中…';
       barFill.style.width = '99%';
       return;
     }
     const pct = Math.min(99, ((SWEEP_ESTIMATE_S - remaining) / SWEEP_ESTIMATE_S) * 100);
     barFill.style.width = pct + '%';
-    etaText.innerHTML = `EST. READY IN <span class="eta">~${remaining}s</span>`;
+    etaText.innerHTML = `預估 <span class="eta">~${remaining}s</span> 後就緒`;
     remaining--;
   }
 
@@ -139,7 +139,7 @@ function goToDashboard() {
   barFill.style.transition = 'width 0.4s ease';
   barFill.style.width = '100%';
   etaText.textContent = '';
-  statusText.textContent = 'TERMINAL READY — LOADING DASHBOARD';
+  statusText.textContent = '終端就緒 — 載入儀表板';
   setTimeout(() => location.replace('/'), 800);
 }
 
